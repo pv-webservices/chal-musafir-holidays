@@ -1,0 +1,424 @@
+@import "tailwindcss";
+
+/* ============================================================
+   Chal Musafir Holidays — design tokens
+   Palette derived from the brand logo (red / blue / orange / green)
+   ============================================================ */
+:root {
+  --brand-blue: #0d6fbb;
+  --brand-blue-dark: #073b67;
+  --brand-navy: #062846;
+  --brand-navy-deep: #041c33;
+  --brand-orange: #ef8b00;
+  --brand-orange-light: #ffb03a;
+  --brand-red: #ee1944;
+  --brand-red-dark: #c7102f;
+  --brand-green: #57992d;
+
+  --surface: #f5f9fd;
+  --surface-alt: #eef6ff;
+  --ink: #0d2740;
+  --muted: #5b6b7a;
+  --line: #e4edf6;
+
+  --shadow-sm: 0 6px 18px rgba(16, 49, 77, 0.07);
+  --shadow-md: 0 14px 38px rgba(16, 49, 77, 0.11);
+  --shadow-lg: 0 26px 64px rgba(10, 40, 70, 0.17);
+
+  --radius-sm: 14px;
+  --radius-md: 22px;
+  --radius-lg: 30px;
+
+  --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: #fff;
+  color: var(--ink);
+  font-family: var(--font-sans), 'Segoe UI', system-ui, sans-serif;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+a { color: inherit; text-decoration: none; }
+button, input, select, textarea { font: inherit; color: inherit; }
+img { max-width: 100%; }
+::selection { background: rgba(13, 111, 187, 0.18); }
+
+/* Scrollbar ------------------------------------------------ */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--surface); }
+::-webkit-scrollbar-thumb { background: #c3d6e8; border-radius: 999px; border: 2px solid var(--surface); }
+::-webkit-scrollbar-thumb:hover { background: var(--brand-blue); }
+
+/* ============================================================
+   Layout primitives
+   ============================================================ */
+.container-shell {
+  width: min(1360px, calc(100% - 32px));
+  margin-inline: auto;
+}
+@media (min-width: 768px) {
+  .container-shell { width: min(1360px, calc(100% - 56px)); }
+}
+
+.section-pad { padding: 72px 0; }
+.section-pad-sm { padding: 48px 0; }
+@media (min-width: 1024px) {
+  .section-pad { padding: 100px 0; }
+  .section-pad-sm { padding: 64px 0; }
+}
+
+.font-display { font-family: var(--font-display), Georgia, serif; }
+.font-script { font-family: var(--font-script), 'Segoe Script', cursive; }
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--brand-blue);
+}
+.eyebrow::before {
+  content: "";
+  width: 28px;
+  height: 3px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand-red), var(--brand-orange));
+}
+
+.section-title {
+  font-size: clamp(28px, 3.2vw, 46px);
+  line-height: 1.08;
+  letter-spacing: -0.035em;
+  font-weight: 900;
+}
+.section-copy { color: var(--muted); line-height: 1.75; }
+
+/* Underline accent used under section headings (matches reference) */
+.title-rule { position: relative; display: inline-block; }
+.title-rule::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -12px;
+  width: 64px;
+  height: 4px;
+  border-radius: 999px;
+  background: linear-gradient(90deg, var(--brand-red), var(--brand-orange));
+}
+
+.card-shadow { box-shadow: var(--shadow-md); }
+.soft-shadow { box-shadow: var(--shadow-sm); }
+.glass { backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px); }
+
+.focus-ring:focus-visible {
+  outline: 3px solid rgba(13, 111, 187, 0.35);
+  outline-offset: 3px;
+  border-radius: 10px;
+}
+
+.hero-overlay {
+  background: linear-gradient(
+    95deg,
+    rgba(244, 250, 255, 0.97) 0%,
+    rgba(244, 250, 255, 0.92) 28%,
+    rgba(244, 250, 255, 0.45) 52%,
+    rgba(244, 250, 255, 0.05) 68%,
+    rgba(3, 26, 45, 0.16) 100%
+  );
+}
+@media (max-width: 1023px) {
+  .hero-overlay {
+    background: linear-gradient(
+      180deg,
+      rgba(244, 250, 255, 0.96) 0%,
+      rgba(244, 250, 255, 0.88) 42%,
+      rgba(244, 250, 255, 0.35) 68%,
+      rgba(3, 26, 45, 0.3) 100%
+    );
+  }
+}
+
+.image-scrim { background: linear-gradient(180deg, transparent 34%, rgba(3, 23, 39, 0.28) 58%, rgba(3, 23, 39, 0.9) 100%); }
+.panel-scrim { background: linear-gradient(90deg, rgba(4, 28, 51, 0.94) 0%, rgba(4, 28, 51, 0.72) 42%, rgba(4, 28, 51, 0.1) 100%); }
+
+/* Hide scrollbars on horizontal rails */
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+.no-scrollbar::-webkit-scrollbar { display: none; }
+
+/* ============================================================
+   Buttons — animated colour-shifting gradients
+   ============================================================ */
+.btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 14px 28px;
+  border-radius: 999px;
+  font-size: 14px;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+  white-space: nowrap;
+  border: 0;
+  cursor: pointer;
+  overflow: hidden;
+  isolation: isolate;
+  transition: transform 0.35s var(--ease-spring), box-shadow 0.35s var(--ease-out), color 0.3s ease;
+  will-change: transform;
+}
+.btn > * { position: relative; z-index: 2; }
+
+/* the animated colour layer */
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  background-size: 300% 100%;
+  background-position: 0% 50%;
+  animation: hue-pan 7s linear infinite;
+  transition: background-position 0.6s var(--ease-out), filter 0.4s ease;
+}
+/* the shine sweep */
+.btn::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -120%;
+  z-index: 1;
+  width: 55%;
+  height: 100%;
+  background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+  transform: skewX(-22deg);
+  transition: left 0.75s var(--ease-out);
+}
+.btn:hover::after,
+.btn:focus-visible::after { left: 145%; }
+
+.btn:hover,
+.btn:focus-visible { transform: translateY(-3px); }
+.btn:active { transform: translateY(-1px) scale(0.985); }
+
+.btn-primary {
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(238, 25, 68, 0.32);
+}
+.btn-primary::before {
+  background-image: linear-gradient(
+    100deg,
+    var(--brand-red) 0%,
+    #ff4d3d 22%,
+    var(--brand-orange) 45%,
+    #ff4d3d 68%,
+    var(--brand-red) 100%
+  );
+}
+.btn-primary:hover { box-shadow: 0 18px 44px rgba(238, 25, 68, 0.42); }
+
+.btn-ocean {
+  color: #fff;
+  box-shadow: 0 12px 30px rgba(13, 111, 187, 0.32);
+}
+.btn-ocean::before {
+  background-image: linear-gradient(
+    100deg,
+    var(--brand-blue-dark) 0%,
+    var(--brand-blue) 25%,
+    #16a5d8 48%,
+    var(--brand-blue) 72%,
+    var(--brand-blue-dark) 100%
+  );
+}
+.btn-ocean:hover { box-shadow: 0 18px 44px rgba(13, 111, 187, 0.42); }
+
+.btn-sun {
+  color: #4a2600;
+  box-shadow: 0 12px 30px rgba(239, 139, 0, 0.3);
+}
+.btn-sun::before {
+  background-image: linear-gradient(100deg, var(--brand-orange) 0%, #ffd166 30%, var(--brand-orange-light) 55%, #ffd166 78%, var(--brand-orange) 100%);
+}
+
+/* Outline button that fills with colour on hover */
+.btn-ghost {
+  color: var(--ink);
+  border: 1.5px solid var(--line);
+  background: rgba(255, 255, 255, 0.9);
+  box-shadow: var(--shadow-sm);
+}
+.btn-ghost::before {
+  opacity: 0;
+  background-image: linear-gradient(100deg, var(--brand-blue-dark), var(--brand-blue), #16a5d8, var(--brand-blue));
+  transition: opacity 0.4s var(--ease-out);
+}
+.btn-ghost:hover,
+.btn-ghost:focus-visible {
+  color: #fff;
+  border-color: transparent;
+  box-shadow: 0 16px 38px rgba(13, 111, 187, 0.3);
+}
+.btn-ghost:hover::before,
+.btn-ghost:focus-visible::before { opacity: 1; }
+
+.btn-on-dark {
+  color: #fff;
+  border: 1.5px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.1);
+}
+.btn-on-dark::before {
+  opacity: 0;
+  background-image: linear-gradient(100deg, #fff, #eaf4ff, #fff);
+  transition: opacity 0.4s var(--ease-out);
+}
+.btn-on-dark:hover,
+.btn-on-dark:focus-visible { color: var(--brand-blue-dark); border-color: transparent; }
+.btn-on-dark:hover::before,
+.btn-on-dark:focus-visible::before { opacity: 1; }
+
+.btn-sm { padding: 10px 20px; font-size: 13px; }
+.btn-lg { padding: 17px 34px; font-size: 15px; }
+
+@keyframes hue-pan {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+/* Text link with sliding arrow */
+.link-arrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--brand-blue);
+  transition: color 0.3s ease, gap 0.3s var(--ease-out);
+}
+.link-arrow:hover { color: var(--brand-red); gap: 14px; }
+
+/* ============================================================
+   Cards — hover / touch motion
+   ============================================================ */
+.card-motion {
+  position: relative;
+  transition: transform 0.45s var(--ease-out), box-shadow 0.45s var(--ease-out), border-color 0.45s ease;
+  will-change: transform;
+}
+.card-motion:hover,
+.card-motion:focus-within {
+  transform: translateY(-8px);
+  box-shadow: var(--shadow-lg);
+}
+/* touch feedback on mobile */
+.card-motion:active { transform: translateY(-3px) scale(0.99); }
+
+/* image inside a card */
+.card-zoom { transition: transform 0.85s var(--ease-out), filter 0.6s ease; }
+.group:hover .card-zoom,
+.card-motion:hover .card-zoom { transform: scale(1.08); }
+
+/* animated gradient rim that appears on hover */
+.card-rim::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: linear-gradient(130deg, var(--brand-blue), var(--brand-orange), var(--brand-red), var(--brand-blue));
+  background-size: 300% 300%;
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  opacity: 0;
+  transition: opacity 0.45s var(--ease-out);
+  pointer-events: none;
+  z-index: 3;
+}
+.card-rim:hover::before,
+.card-rim:focus-within::before {
+  opacity: 1;
+  animation: hue-pan 4s linear infinite;
+}
+
+/* soft glow behind icon tiles */
+.icon-tile {
+  transition: transform 0.45s var(--ease-spring), box-shadow 0.45s var(--ease-out), background-color 0.4s ease, color 0.4s ease;
+}
+.group:hover .icon-tile {
+  transform: translateY(-6px) scale(1.06) rotate(-4deg);
+  box-shadow: 0 16px 32px rgba(13, 111, 187, 0.22);
+}
+
+/* ============================================================
+   Scroll reveal
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
+}
+.reveal[data-visible="true"] { opacity: 1; transform: none; }
+
+/* ============================================================
+   Decorative motion
+   ============================================================ */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.animate-float { animation: float-y 6s ease-in-out infinite; }
+
+@keyframes fade-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-fade-up { animation: fade-up 0.8s var(--ease-out) both; }
+
+@keyframes draw-in {
+  from { stroke-dashoffset: 1000; }
+  to { stroke-dashoffset: 0; }
+}
+
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 42s linear infinite;
+}
+.marquee-wrap:hover .marquee-track { animation-play-state: paused; }
+
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(238, 25, 68, 0.45); }
+  70% { box-shadow: 0 0 0 16px rgba(238, 25, 68, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(238, 25, 68, 0); }
+}
+.pulse-ring { animation: pulse-ring 2.4s ease-out infinite; }
+
+/* ============================================================
+   Accessibility
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    scroll-behavior: auto !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .reveal { opacity: 1; transform: none; }
+  .card-motion:hover { transform: none; }
+}

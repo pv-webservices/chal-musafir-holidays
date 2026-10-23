@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { PageHero } from '@/components/ui/PageHero';
 import { PackageCard } from '@/components/ui/PackageCard';
 import { DestinationCard } from '@/components/ui/DestinationCard';
@@ -9,11 +10,11 @@ import { ButtonLink } from '@/components/ui/Buttons';
 import { packages } from '@/data/packages';
 import { destinations } from '@/data/destinations';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Honeymoon Packages',
   description: 'Romantic domestic and international honeymoon packages — Bali, Mauritius, Thailand, Kerala, Himachal and Europe, planned around the two of you.',
-  alternates: { canonical: '/honeymoon-packages' },
-};
+  path: '/honeymoon-packages', image: '/images/banners/honeymoon.webp',
+});
 
 const honeymoonSlugs = ['indonesia', 'mauritius', 'thailand', 'kerala', 'himachal-pradesh', 'goa', 'france', 'sri-lanka'];
 
@@ -38,7 +39,7 @@ export default function HoneymoonPage() {
         image="/images/banners/honeymoon.webp"
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Honeymoon Packages' }]}
       >
-        <ButtonLink href="/quote?trip=Honeymoon" variant="primary" size="lg" withArrow>
+        <ButtonLink href="/quote/?trip=Honeymoon" variant="primary" size="lg" withArrow>
           Plan Our Honeymoon
         </ButtonLink>
       </PageHero>
@@ -53,7 +54,7 @@ export default function HoneymoonPage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {list.map((item, index) => (
               <Reveal key={item.slug} delay={(index % 4) * 70}>
-                <DestinationCard item={item} priority={index < 4} />
+                <DestinationCard item={item} />
               </Reveal>
             ))}
           </div>
@@ -72,7 +73,7 @@ export default function HoneymoonPage() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-5 text-sm text-slate-500">Subject to property policy — we request them in writing on your behalf, every time.</p>
+              <p className="mt-5 text-sm text-slate-600">Subject to property policy — we request them in writing on your behalf, every time.</p>
             </div>
           </Reveal>
         </div>
@@ -80,7 +81,7 @@ export default function HoneymoonPage() {
 
       <section className="section-pad bg-[var(--surface)]">
         <div className="container-shell">
-          <SectionHeading eyebrow="Featured" title="Honeymoon itinerary ideas" action={{ label: 'All packages', href: '/packages' }} />
+          <SectionHeading eyebrow="Featured" title="Honeymoon itinerary ideas" action={{ label: 'All packages', href: '/packages/' }} />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {[...honeymoonPackages, ...otherIdeas].map((item, index) => (
               <Reveal key={item.slug} delay={(index % 3) * 90}>

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { clampDescription, pageMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
@@ -20,12 +21,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = getPackage(slug);
   if (!item) return {};
-  return {
+  return pageMetadata({
     title: item.title,
-    description: item.overview,
-    alternates: { canonical: `/packages/${item.slug}` },
-    openGraph: { title: item.title, description: item.overview, images: [item.image] },
-  };
+    description: clampDescription(item.overview),
+    path: `/packages/${item.slug}`,
+    image: item.image,
+    imageAlt: item.title,
+  });
 }
 
 export default async function PackageDetailPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -39,12 +41,12 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
     <>
       <section className="bg-white">
         <div className="container-shell pt-6">
-          <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Packages', href: '/packages' }, { label: item.title }]} />
+          <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'Packages', href: '/packages/' }, { label: item.title }]} />
         </div>
 
         <div className="container-shell pb-10 pt-6">
           <div className="relative min-h-[420px] overflow-hidden rounded-[32px] md:min-h-[520px]">
-            <Image src={item.image} alt={item.title} fill preload className="object-cover" sizes="100vw" />
+            <Image src={item.image} alt="" fill loading="eager" fetchPriority="high" className="object-cover" sizes="(max-width: 1440px) 100vw, 1360px" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#041c33]/92 via-[#041c33]/25 to-transparent" />
 
             <div className="absolute inset-x-0 bottom-0 p-7 text-white md:p-10">
@@ -102,7 +104,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
                     />
                     <Reveal>
                       <article className="card-motion rounded-2xl border border-[var(--line)] bg-white p-5 soft-shadow">
-                        <span className="text-xs font-black uppercase tracking-wider text-[var(--brand-red)]">{day.day}</span>
+                        <span className="text-xs font-black uppercase tracking-wider text-[var(--brand-red-dark)]">{day.day}</span>
                         <h3 className="mt-1 text-lg font-black">{day.title}</h3>
                         <p className="mt-2 text-sm leading-6 text-slate-600">{day.detail}</p>
                       </article>
@@ -141,7 +143,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
               </dl>
 
               <div className="mt-6 grid gap-2.5">
-                <ButtonLink href={`/quote?destination=${encodeURIComponent(item.destination)}&trip=${encodeURIComponent(item.type)}`} variant="primary" className="w-full">
+                <ButtonLink href={`/quote/?destination=${encodeURIComponent(item.destination)}&trip=${encodeURIComponent(item.type)}`} variant="primary" className="w-full">
                   Request Quote
                 </ButtonLink>
                 <a href={`tel:${site.primaryPhone}`} className="btn btn-ghost focus-ring w-full">
@@ -159,7 +161,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
                 </a>
               </div>
 
-              <Link href={`/destinations/${item.destinationSlug}`} className="link-arrow mt-6">
+              <Link href={`/destinations/${item.destinationSlug}/`} className="link-arrow mt-6">
                 Read the {item.destination} guide
               </Link>
             </div>
@@ -169,7 +171,7 @@ export default async function PackageDetailPage({ params }: { params: Promise<{ 
 
       <section className="section-pad bg-[var(--surface)]">
         <div className="container-shell">
-          <SectionHeading eyebrow="You might also like" title="Related Packages" action={{ label: 'All packages', href: '/packages' }} />
+          <SectionHeading eyebrow="You might also like" title="Related Packages" action={{ label: 'All packages', href: '/packages/' }} />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {related.map((pkg) => (
               <PackageCard key={pkg.slug} item={pkg} />
@@ -214,7 +216,7 @@ function List({ title, items, icon: Icon, good = false }: { title: string; items
       <ul className="mt-4 space-y-3">
         {items.map((entry) => (
           <li key={entry} className="flex gap-2.5 text-sm leading-6 text-slate-600">
-            <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${good ? 'text-green-600' : 'text-slate-400'}`} aria-hidden />
+            <Icon className={`mt-0.5 h-4 w-4 shrink-0 ${good ? 'text-green-600' : 'text-slate-600'}`} aria-hidden />
             {entry}
           </li>
         ))}

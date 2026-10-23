@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { PageHero } from '@/components/ui/PageHero';
 import { addressLine, site } from '@/data/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Privacy Policy',
   description: 'How Chal Musafir Holidays collects, uses and protects the personal information you share when planning travel with us.',
-  alternates: { canonical: '/privacy' },
-};
+  path: '/privacy', image: '/images/hero/contact.webp',
+});
 
 const sections: { heading: string; body: string[] }[] = [
   {
@@ -28,6 +29,14 @@ const sections: { heading: string; body: string[] }[] = [
     body: [
       'Your information is used to respond to your enquiry, prepare quotations and itineraries, make and manage bookings with travel suppliers, meet legal or regulatory obligations, and contact you about the trip you asked us to plan.',
       'We do not sell your personal information. We do not use it for unrelated marketing unless you have asked us to keep you informed.',
+    ],
+  },
+  {
+    heading: 'How website forms are delivered',
+    body: [
+      `The enquiry and trip-planner forms on this website are delivered by FormSubmit (formsubmit.co), a third-party form-delivery service. When you press Send, the details you entered — together with the page you sent them from and the time of submission — are passed to FormSubmit, which emails them to our Gmail address, ${site.email}. FormSubmit processes the submission only to deliver it, under its own privacy terms, and the email is then stored in our Google (Gmail) account under Google's privacy terms.`,
+      'If you use the "Send via WhatsApp" button instead, your message is sent through WhatsApp (Meta) under WhatsApp’s own terms.',
+      'If you would rather not use these services, call or email us directly using the details on this page.',
     ],
   },
   {

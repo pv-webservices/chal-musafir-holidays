@@ -2,7 +2,7 @@
 
 import Image from 'next/image';
 import Link from 'next/link';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, X } from 'lucide-react';
 import { destinations } from '@/data/destinations';
 import { yatras } from '@/data/pilgrimage';
@@ -24,14 +24,14 @@ const items: GalleryItem[] = [
     const tags = [item.region === 'domestic' ? 'Domestic' : 'International'];
     if (honeymoonSlugs.has(item.slug)) tags.push('Honeymoon');
     if (familySlugs.has(item.slug)) tags.push('Family');
-    return { tags, title: item.name, caption: item.subtitle, image: item.image, href: `/destinations/${item.slug}` };
+    return { tags, title: item.name, caption: item.subtitle, image: item.image, href: `/destinations/${item.slug}/` };
   }),
   ...yatras.map((item) => ({
     tags: ['Pilgrimage'],
     title: item.name,
     caption: item.location,
     image: item.image,
-    href: `/pilgrimage-packages#${item.slug}`,
+    href: `/pilgrimage-packages/#${item.slug}`,
   })),
 ];
 
@@ -40,6 +40,37 @@ const filters = ['All', 'Domestic', 'International', 'Honeymoon', 'Family', 'Pil
 export function GalleryGrid() {
   const [filter, setFilter] = useState<string>('All');
   const [active, setActive] = useState<GalleryItem | null>(null);
+
+  const closeRef = useRef<HTMLButtonElement>(null);
+  const openerRef = useRef<HTMLElement | null>(null);
+
+  // Lightbox keyboard support: focus the close button, Escape closes, focus returns to the opener.
+  useEffect(() => {
+    if (!active) return;
+    openerRef.current = document.activeElement as HTMLElement | null;
+    closeRef.current?.focus();
+    const onKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') setActive(null);
+      if (event.key === 'Tab') {
+        const focusable = closeRef.current?.closest('[role="dialog"]')?.querySelectorAll<HTMLElement>('a[href], button');
+        if (!focusable?.length) return;
+        const first = focusable[0];
+        const last = focusable[focusable.length - 1];
+        if (event.shiftKey && document.activeElement === first) {
+          event.preventDefault();
+          last.focus();
+        } else if (!event.shiftKey && document.activeElement === last) {
+          event.preventDefault();
+          first.focus();
+        }
+      }
+    };
+    document.addEventListener('keydown', onKey);
+    return () => {
+      document.removeEventListener('keydown', onKey);
+      openerRef.current?.focus();
+    };
+  }, [active]);
 
   const visible = useMemo(() => (filter === 'All' ? items : items.filter((item) => item.tags.includes(filter))), [filter]);
 
@@ -61,7 +92,7 @@ export function GalleryGrid() {
               }`}
             >
               {option}
-              <span className={`ml-1.5 text-xs ${filter === option ? 'text-blue-100' : 'text-slate-400'}`}>{count}</span>
+              <span className={`ml-1.5 text-xs ${filter === option ? 'text-white' : 'text-slate-600'}`}>{count}</span>
             </button>
           );
         })}
@@ -73,13 +104,12 @@ export function GalleryGrid() {
             <button
               type="button"
               onClick={() => setActive(item)}
-              aria-label={`View ${item.title} larger`}
               className="card-motion group focus-ring relative block w-full overflow-hidden rounded-2xl text-left"
             >
               <div className={`relative ${index % 3 === 0 ? 'aspect-[4/5]' : 'aspect-[4/3]'}`}>
                 <Image
                   src={item.image}
-                  alt={item.title}
+                  alt=""
                   fill
                   className="card-zoom object-cover"
                   sizes="(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 32vw"
@@ -89,6 +119,7 @@ export function GalleryGrid() {
                   <span className="text-[11px] font-black uppercase tracking-wider text-orange-200">{item.tags.join(' · ')}</span>
                   <h3 className="mt-1 text-xl font-black leading-tight">{item.title}</h3>
                   <p className="text-sm text-white/80">{item.caption}</p>
+                  <span className="sr-only">(view larger)</span>
                 </figcaption>
               </div>
             </button>
@@ -105,6 +136,7 @@ export function GalleryGrid() {
           onClick={() => setActive(null)}
         >
           <button
+            ref={closeRef}
             type="button"
             aria-label="Close image"
             onClick={() => setActive(null)}

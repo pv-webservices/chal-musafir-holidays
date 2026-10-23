@@ -49,7 +49,7 @@ export function PackageFilters() {
             Filter packages
           </h2>
           {isFiltered && (
-            <button type="button" onClick={reset} className="focus-ring rounded text-xs font-black text-[var(--brand-red)] hover:underline">
+            <button type="button" onClick={reset} className="focus-ring rounded text-xs font-black text-[var(--brand-red-dark)] hover:underline">
               Clear all
             </button>
           )}
@@ -102,7 +102,7 @@ export function PackageFilters() {
             That does not mean we cannot plan it — most of our trips are built from scratch. Tell us what you had in mind.
           </p>
           <div className="mt-7 flex flex-wrap justify-center gap-3">
-            <ButtonLink href="/quote" variant="primary" withArrow>
+            <ButtonLink href="/quote/" variant="primary" withArrow>
               Request a Custom Trip
             </ButtonLink>
             <button type="button" onClick={reset} className="btn btn-ghost focus-ring">
@@ -118,7 +118,7 @@ export function PackageFilters() {
 function FilterGroup({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <fieldset>
-      <legend className="mb-2.5 text-xs font-black uppercase tracking-wide text-slate-400">{label}</legend>
+      <legend className="mb-2.5 text-xs font-black uppercase tracking-wide text-slate-600">{label}</legend>
       <div className="flex flex-wrap gap-2">{children}</div>
     </fieldset>
   );

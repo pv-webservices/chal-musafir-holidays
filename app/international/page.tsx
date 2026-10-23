@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import Link from 'next/link';
 import { FileCheck2, Plane, ShieldCheck } from 'lucide-react';
 import { PageHero } from '@/components/ui/PageHero';
@@ -11,12 +12,11 @@ import { ButtonLink } from '@/components/ui/Buttons';
 import { internationalDestinations } from '@/data/destinations';
 import { packages } from '@/data/packages';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'International Holidays',
-  description:
-    'International holiday planning for Thailand, Dubai, Singapore, Malaysia, Indonesia, Sri Lanka, Mauritius, France, Europe, the United Kingdom and Australia.',
-  alternates: { canonical: '/international' },
-};
+  description: 'International holiday planning for Thailand, Dubai, Singapore, Malaysia, Indonesia, Sri Lanka, Mauritius, France, Europe, the United Kingdom and Australia.',
+  path: '/international', image: '/images/hero/international.webp',
+});
 
 const support = [
   { icon: FileCheck2, title: 'Visa documentation', copy: 'Country-specific checklists, form guidance and appointment support.' },
@@ -36,7 +36,7 @@ export default function InternationalPage() {
         image="/images/hero/international.webp"
         crumbs={[{ label: 'Home', href: '/' }, { label: 'International Holidays' }]}
       >
-        <ButtonLink href="/quote?trip=International" variant="primary" size="lg" withArrow>
+        <ButtonLink href="/quote/?trip=International" variant="primary" size="lg" withArrow>
           Plan an International Trip
         </ButtonLink>
       </PageHero>
@@ -51,7 +51,7 @@ export default function InternationalPage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
             {internationalDestinations.map((item, index) => (
               <Reveal key={item.slug} delay={(index % 4) * 70}>
-                <DestinationCard item={item} priority={index < 4} />
+                <DestinationCard item={item} />
               </Reveal>
             ))}
           </div>
@@ -68,7 +68,7 @@ export default function InternationalPage() {
                 </span>
                 <h3 className="mt-5 text-lg font-black">{title}</h3>
                 <p className="mt-2.5 text-sm leading-6 text-slate-500">{copy}</p>
-                <Link href="/services" className="link-arrow mt-4">
+                <Link href="/services/" className="link-arrow mt-4">
                   See all services
                 </Link>
               </article>
@@ -83,7 +83,7 @@ export default function InternationalPage() {
             eyebrow="Package ideas"
             title="Start with a practical itinerary concept"
             copy="Each one is a real route we run — use it as written or reshape it around your dates and interests."
-            action={{ label: 'All packages', href: '/packages' }}
+            action={{ label: 'All packages', href: '/packages/' }}
           />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {internationalPackages.map((item, index) => (

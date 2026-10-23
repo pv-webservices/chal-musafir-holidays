@@ -33,23 +33,31 @@
   --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
-* { box-sizing: border-box; }
-html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+/* Element defaults live in the base layer so Tailwind utilities (font-weight,
+   font-size, colour…) always win. Unlayered, `font: inherit` on <button>
+   silently overrode classes such as `font-extrabold` on the nav dropdowns. */
+@layer base {
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
 
-body {
-  margin: 0;
-  background: #fff;
-  color: var(--ink);
-  font-family: var(--font-sans), 'Segoe UI', system-ui, sans-serif;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  overflow-x: hidden;
+  body {
+    margin: 0;
+    background: #fff;
+    color: var(--ink);
+    font-family: var(--font-sans), 'Segoe UI', system-ui, sans-serif;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+
+  a { color: inherit; text-decoration: none; }
+  button, input, select, textarea { font: inherit; color: inherit; }
+  img { max-width: 100%; }
+  ::selection { background: rgba(13, 111, 187, 0.18); }
+
+  /* Keep focused fields and in-page targets clear of the sticky header. */
+  input, textarea, select, [id] { scroll-margin-top: 140px; }
 }
-
-a { color: inherit; text-decoration: none; }
-button, input, select, textarea { font: inherit; color: inherit; }
-img { max-width: 100%; }
-::selection { background: rgba(13, 111, 187, 0.18); }
 
 /* Scrollbar ------------------------------------------------ */
 ::-webkit-scrollbar { width: 10px; height: 10px; }
@@ -300,6 +308,7 @@ img { max-width: 100%; }
 .link-arrow {
   display: inline-flex;
   align-items: center;
+  min-height: 24px;
   gap: 8px;
   font-size: 14px;
   font-weight: 800;
@@ -364,12 +373,15 @@ img { max-width: 100%; }
 /* ============================================================
    Scroll reveal
    ============================================================ */
-.reveal {
+/* Only hidden when JavaScript is running (html.js is set by an inline script
+   in the layout) — without JS, content must never stay invisible. */
+.js .reveal {
   opacity: 0;
   transform: translateY(26px);
   transition: opacity 0.75s var(--ease-out), transform 0.75s var(--ease-out);
 }
-.reveal[data-visible="true"] { opacity: 1; transform: none; }
+.js .reveal[data-visible="true"] { opacity: 1; transform: none; }
+html:not(.js) .js-only { display: none; }
 
 /* ============================================================
    Decorative motion
@@ -385,6 +397,14 @@ img { max-width: 100%; }
   to { opacity: 1; transform: none; }
 }
 .animate-fade-up { animation: fade-up 0.8s var(--ease-out) both; }
+
+/* Hero text (the LCP element) only slides in — it is never transparent, so the
+   browser can paint and record it immediately. */
+@keyframes rise-in {
+  from { transform: translateY(14px); }
+  to { transform: none; }
+}
+.animate-rise { animation: rise-in 0.7s var(--ease-out) both; }
 
 @keyframes draw-in {
   from { stroke-dashoffset: 1000; }
@@ -419,6 +439,6 @@ img { max-width: 100%; }
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
   }
-  .reveal { opacity: 1; transform: none; }
+  .js .reveal { opacity: 1; transform: none; }
   .card-motion:hover { transform: none; }
 }

@@ -47,11 +47,14 @@ export function Rail({ children, label, itemClassName = '' }: RailProps) {
 
   return (
     <div className="relative">
+      {/* No `scroll-smooth` here: CSS smooth scrolling on a snap container makes Chrome
+          treat the initial snap as a scroll, which stops Largest Contentful Paint from
+          being recorded for the whole page. The arrow buttons pass behavior: 'smooth' instead. */}
       <div
         ref={trackRef}
         role="group"
         aria-label={label}
-        className="no-scrollbar -mx-1 flex snap-x snap-mandatory gap-5 overflow-x-auto scroll-smooth px-1 pb-2"
+        className="no-scrollbar -mx-1 flex snap-x snap-mandatory gap-5 overflow-x-auto px-1 pb-2"
       >
         {Array.isArray(children)
           ? children.map((child, index) => (

@@ -18,7 +18,7 @@ export function CTASection() {
             Tell us where you want to go. We&rsquo;ll handle the route, the stays, the paperwork and everything in between.
           </p>
           <div className="mt-9 flex flex-wrap gap-3">
-            <ButtonLink href="/quote" variant="primary" size="lg" withArrow>
+            <ButtonLink href="/quote/" variant="primary" size="lg" withArrow>
               Get a Free Quote
             </ButtonLink>
             <ButtonLink href={`tel:${site.primaryPhone}`} variant="on-dark" size="lg">

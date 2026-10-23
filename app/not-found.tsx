@@ -1,11 +1,20 @@
 import Image from 'next/image';
+import Link from 'next/link';
+import { Phone } from 'lucide-react';
 import { ButtonLink } from '@/components/ui/Buttons';
+import { site } from '@/data/site';
+
+// Title, description and the absence of a canonical come from the root
+// layout defaults; Next adds <meta name="robots" content="noindex"> and the
+// real 404 status itself.
 
 const suggestions = [
-  ['Holiday Packages', '/packages'],
-  ['All Destinations', '/destinations'],
-  ['Our Services', '/services'],
-  ['Contact Us', '/contact'],
+  ['Holiday Packages', '/packages/'],
+  ['All Destinations', '/destinations/'],
+  ['Pilgrimage Yatras', '/pilgrimage-packages/'],
+  ['Our Services', '/services/'],
+  ['About Us', '/about/'],
+  ['Contact Us', '/contact/'],
 ] as const;
 
 export default function NotFound() {
@@ -19,7 +28,7 @@ export default function NotFound() {
         <h1 className="mt-4 max-w-2xl text-4xl font-black leading-tight tracking-[-0.04em] md:text-6xl">
           This route isn&rsquo;t on our map
         </h1>
-        <p className="mt-5 max-w-xl leading-8 text-blue-100/85">
+        <p className="mt-5 max-w-xl leading-8 text-blue-100">
           The page you were looking for may have moved. Try one of these instead — or tell us where you want to go and we will plan it.
         </p>
 
@@ -27,23 +36,28 @@ export default function NotFound() {
           <ButtonLink href="/" variant="primary" size="lg" withArrow>
             Back to Home
           </ButtonLink>
-          <ButtonLink href="/quote" variant="on-dark" size="lg">
+          <ButtonLink href="/quote/" variant="on-dark" size="lg">
             Plan My Trip
           </ButtonLink>
         </div>
 
+        <h2 className="sr-only">Popular sections</h2>
         <ul className="mt-10 flex flex-wrap justify-center gap-2.5">
           {suggestions.map(([label, href]) => (
             <li key={href}>
-              <a
+              <Link
                 href={href}
-                className="focus-ring inline-flex rounded-full border border-white/25 bg-white/10 px-5 py-2.5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-[var(--brand-blue-dark)]"
+                className="focus-ring inline-flex min-h-11 items-center rounded-full border border-white/25 bg-white/10 px-5 text-sm font-bold transition-all duration-300 hover:-translate-y-0.5 hover:bg-white hover:text-[var(--brand-blue-dark)]"
               >
                 {label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
+
+        <a href={`tel:${site.primaryPhone}`} className="focus-ring mt-8 inline-flex items-center gap-2 rounded font-bold text-orange-200 hover:text-white">
+          <Phone className="h-4 w-4" aria-hidden /> Or call us on +91 {site.phones[0]}
+        </a>
       </div>
     </section>
   );

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import { Building2, HeartHandshake, Route, Target } from 'lucide-react';
 import { PageHero } from '@/components/ui/PageHero';
@@ -11,12 +12,11 @@ import { destinations } from '@/data/destinations';
 import { services } from '@/data/services';
 import { addressLine, site, yearsOfExperience } from '@/data/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'About Us',
-  description:
-    'Chal Musafir Holidays — a unit of Shirdi Sai Travelease.com, planning domestic and international travel from Moradabad since 2011.',
-  alternates: { canonical: '/about' },
-};
+  description: 'Chal Musafir Holidays — a unit of Shirdi Sai Travelease.com, planning domestic and international travel from Moradabad since 2011.',
+  path: '/about', image: '/images/hero/about.webp',
+});
 
 const values = [
   { icon: Target, title: 'Mission', copy: 'Make travel planning clearer and less stressful through honest guidance, coordinated services and support you can actually reach.' },
@@ -58,10 +58,10 @@ export default function AboutPage() {
               across a desk rather than over email.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/contact" variant="primary" withArrow>
+              <ButtonLink href="/contact/" variant="primary" withArrow>
                 Visit Our Office
               </ButtonLink>
-              <ButtonLink href="/services" variant="ghost">
+              <ButtonLink href="/services/" variant="ghost">
                 What We Offer
               </ButtonLink>
             </div>
@@ -140,10 +140,10 @@ export default function AboutPage() {
                   {addressLine}. Open Monday to Saturday, 10:00 am to 8:00 pm. Call {site.phones.join(', ')} or email {site.email}.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
-                  <ButtonLink href="/contact" variant="primary" withArrow>
+                  <ButtonLink href="/contact/" variant="primary" withArrow>
                     Get Directions
                   </ButtonLink>
-                  <ButtonLink href="/quote" variant="on-dark">
+                  <ButtonLink href="/quote/" variant="on-dark">
                     Plan My Trip
                   </ButtonLink>
                 </div>

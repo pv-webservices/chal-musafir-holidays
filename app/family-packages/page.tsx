@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { Baby, Bed, Soup, Timer } from 'lucide-react';
 import { PageHero } from '@/components/ui/PageHero';
 import { PackageCard } from '@/components/ui/PackageCard';
@@ -10,11 +11,11 @@ import { ButtonLink } from '@/components/ui/Buttons';
 import { packages } from '@/data/packages';
 import { destinations } from '@/data/destinations';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Family Packages',
   description: 'Family holiday planning with sensible pacing, the right room configuration and activities that work for every age in the group.',
-  alternates: { canonical: '/family-packages' },
-};
+  path: '/family-packages', image: '/images/hero/family.webp',
+});
 
 const familySlugs = ['singapore', 'dubai', 'kerala', 'goa', 'himachal-pradesh', 'malaysia', 'uttarakhand', 'thailand'];
 
@@ -39,7 +40,7 @@ export default function FamilyPage() {
         image="/images/hero/family.webp"
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Family Packages' }]}
       >
-        <ButtonLink href="/quote?trip=Family" variant="primary" size="lg" withArrow>
+        <ButtonLink href="/quote/?trip=Family" variant="primary" size="lg" withArrow>
           Plan a Family Trip
         </ButtonLink>
       </PageHero>
@@ -72,7 +73,7 @@ export default function FamilyPage() {
           <SectionHeading
             eyebrow="Family-friendly destinations"
             title="Places that work for every age"
-            action={{ label: 'All destinations', href: '/destinations' }}
+            action={{ label: 'All destinations', href: '/destinations/' }}
           />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             {list.map((item, index) => (
@@ -90,7 +91,7 @@ export default function FamilyPage() {
             eyebrow="Starting points"
             title="Family itinerary ideas"
             copy="Final hotels, room configuration, transfers and activities are chosen once we know the ages and what the group actually enjoys."
-            action={{ label: 'All packages', href: '/packages' }}
+            action={{ label: 'All packages', href: '/packages/' }}
           />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {[...familyPackages, ...others].map((item, index) => (

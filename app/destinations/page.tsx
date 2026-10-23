@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { PageHero } from '@/components/ui/PageHero';
 import { SectionHeading } from '@/components/ui/SectionHeading';
 import { CTASection } from '@/components/ui/CTASection';
@@ -7,12 +8,11 @@ import { Reveal } from '@/components/ui/Reveal';
 import { ButtonLink } from '@/components/ui/Buttons';
 import { domesticDestinations, internationalDestinations, destinations } from '@/data/destinations';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'All Destinations',
-  description:
-    'Every destination Chal Musafir Holidays plans for — Kerala, Rajasthan, Goa, Himachal, Uttarakhand, South India, Thailand, Dubai, Singapore, Europe and more.',
-  alternates: { canonical: '/destinations' },
-};
+  description: 'Every destination Chal Musafir Holidays plans for — Kerala, Rajasthan, Goa, Himachal, Uttarakhand, South India, Thailand, Dubai, Singapore, Europe and more.',
+  path: '/destinations', image: '/images/hero/packages.webp',
+});
 
 export default function DestinationsPage() {
   return (
@@ -40,12 +40,12 @@ export default function DestinationsPage() {
             eyebrow="Incredible India"
             title="Domestic Destinations"
             copy="Beaches, heritage cities, Himalayan valleys, tea country and the pilgrimage circuits — planned end to end from Moradabad."
-            action={{ label: 'Domestic holiday ideas', href: '/domestic' }}
+            action={{ label: 'Domestic holiday ideas', href: '/domestic/' }}
           />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {domesticDestinations.map((item, index) => (
               <Reveal key={item.slug} delay={(index % 5) * 70}>
-                <DestinationCard item={item} priority={index < 5} />
+                <DestinationCard item={item} />
               </Reveal>
             ))}
           </div>
@@ -58,7 +58,7 @@ export default function DestinationsPage() {
             eyebrow="Around the world"
             title="International Destinations"
             copy="From a four-day Dubai break to a two-week European circuit — with visa, ticketing and insurance handled alongside the itinerary."
-            action={{ label: 'International holiday ideas', href: '/international' }}
+            action={{ label: 'International holiday ideas', href: '/international/' }}
           />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {internationalDestinations.map((item, index) => (

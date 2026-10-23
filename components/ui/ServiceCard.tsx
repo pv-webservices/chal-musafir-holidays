@@ -6,7 +6,7 @@ import type { Service } from '@/data/services';
 export function ServiceCard({ item }: { item: Service }) {
   return (
     <Link
-      href={`/services/${item.slug}`}
+      href={`/services/${item.slug}/`}
       className="card-motion card-rim group focus-ring relative flex flex-col overflow-hidden rounded-[22px] border border-[var(--line)] bg-white soft-shadow"
     >
       <div className="relative aspect-[16/11] overflow-hidden">

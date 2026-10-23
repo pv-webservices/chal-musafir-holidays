@@ -13,12 +13,12 @@ const trustChips = [
 
 /** Quick links that replace the reference mock-up's live-inventory search bar. */
 const serviceShortcuts = [
-  { label: 'Air Tickets', href: '/services/air-tickets', icon: Plane },
-  { label: 'Hotels & Resorts', href: '/services/hotel-booking', icon: BadgeIndianRupee },
-  { label: 'Holiday Packages', href: '/packages', icon: UsersRound },
-  { label: 'Rail Tickets', href: '/services/rail-tickets', icon: Train },
-  { label: 'Cruise Holidays', href: '/services/cruise-holidays', icon: Ship },
-  { label: 'Visa Assistance', href: '/services/visa-assistance', icon: ShieldCheck },
+  { label: 'Air Tickets', href: '/services/air-tickets/', icon: Plane },
+  { label: 'Hotels & Resorts', href: '/services/hotel-booking/', icon: BadgeIndianRupee },
+  { label: 'Holiday Packages', href: '/packages/', icon: UsersRound },
+  { label: 'Rail Tickets', href: '/services/rail-tickets/', icon: Train },
+  { label: 'Cruise Holidays', href: '/services/cruise-holidays/', icon: Ship },
+  { label: 'Visa Assistance', href: '/services/visa-assistance/', icon: ShieldCheck },
 ];
 
 export function HomeHero() {
@@ -29,7 +29,8 @@ export function HomeHero() {
           src="/images/hero/home.webp"
           alt="Traveller looking out over a turquoise tropical bay"
           fill
-          preload
+          loading="eager"
+          fetchPriority="high"
           className="object-cover object-[70%_center] lg:object-center"
           sizes="100vw"
         />
@@ -37,23 +38,23 @@ export function HomeHero() {
 
         <div className="container-shell relative z-10 grid min-h-[600px] items-center py-14 lg:min-h-[680px] lg:grid-cols-[minmax(0,.95fr)_minmax(0,1.05fr)]">
           <div className="max-w-xl">
-            <span className="eyebrow animate-fade-up">Travel better, plan smarter</span>
+            <span className="eyebrow animate-rise">Travel better, plan smarter</span>
 
-            <h1 className="animate-fade-up mt-5 text-[clamp(52px,7.2vw,92px)] font-black leading-[0.86] tracking-[-0.06em] text-[#082d4e]" style={{ animationDelay: '80ms' }}>
+            <h1 className="animate-rise mt-5 text-[clamp(52px,7.2vw,92px)] font-black leading-[0.86] tracking-[-0.06em] text-[#082d4e]" style={{ animationDelay: '80ms' }}>
               <span className="block">Explore</span>
               <span className="font-display block italic text-[var(--brand-orange)]">Dream</span>
               <span className="block">Discover</span>
             </h1>
 
-            <p className="animate-fade-up mt-7 max-w-md text-base font-medium leading-7 text-slate-700 md:text-lg" style={{ animationDelay: '160ms' }}>
+            <p className="animate-rise mt-7 max-w-md text-base font-medium leading-7 text-slate-700 md:text-lg" style={{ animationDelay: '160ms' }}>
               Your perfect holiday is just a journey away. Let {site.name} take you there — planned around your dates, your people and your budget.
             </p>
 
             <div className="animate-fade-up mt-8 flex flex-wrap gap-3" style={{ animationDelay: '240ms' }}>
-              <ButtonLink href="/quote" variant="primary" size="lg" withArrow>
+              <ButtonLink href="/quote/" variant="primary" size="lg" withArrow>
                 Plan Your Trip
               </ButtonLink>
-              <ButtonLink href="/packages" variant="ghost" size="lg">
+              <ButtonLink href="/packages/" variant="ghost" size="lg">
                 Explore Packages
               </ButtonLink>
             </div>

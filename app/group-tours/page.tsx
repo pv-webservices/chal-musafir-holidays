@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { Bus, ClipboardCheck, Users, Wallet } from 'lucide-react';
 import { PageHero } from '@/components/ui/PageHero';
 import { PackageCard } from '@/components/ui/PackageCard';
@@ -9,11 +10,11 @@ import { ButtonLink } from '@/components/ui/Buttons';
 import { packages } from '@/data/packages';
 import { site } from '@/data/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Group Packages',
   description: 'Special group packages for families, friends, corporate teams, societies and pilgrimage groups — coordinated end to end.',
-  alternates: { canonical: '/group-tours' },
-};
+  path: '/group-tours', image: '/images/hero/group.webp',
+});
 
 const benefits = [
   { icon: Wallet, title: 'Group rates', copy: 'Negotiated air, hotel and coach rates that a single booking cannot get.' },
@@ -44,7 +45,7 @@ export default function GroupToursPage() {
         image="/images/hero/group.webp"
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Group Packages' }]}
       >
-        <ButtonLink href="/quote?trip=Group" variant="primary" size="lg" withArrow>
+        <ButtonLink href="/quote/?trip=Group" variant="primary" size="lg" withArrow>
           Get a Group Quote
         </ButtonLink>
       </PageHero>
@@ -78,7 +79,7 @@ export default function GroupToursPage() {
                   From eight friends to a coach of eighty. Send the group size and travel window and we will come back with a route and a costing.
                 </p>
                 <div className="mt-7 flex flex-wrap gap-3">
-                  <ButtonLink href="/quote?trip=Group" variant="primary" withArrow>
+                  <ButtonLink href="/quote/?trip=Group" variant="primary" withArrow>
                     Request Group Costing
                   </ButtonLink>
                   <ButtonLink href={`tel:${site.primaryPhone}`} variant="on-dark">
@@ -100,7 +101,7 @@ export default function GroupToursPage() {
 
       <section className="section-pad bg-[var(--surface)]">
         <div className="container-shell">
-          <SectionHeading eyebrow="Starting points" title="Group itinerary concepts" action={{ label: 'All packages', href: '/packages' }} />
+          <SectionHeading eyebrow="Starting points" title="Group itinerary concepts" action={{ label: 'All packages', href: '/packages/' }} />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {[...groupPackages, ...others].map((item, index) => (
               <Reveal key={item.slug} delay={(index % 3) * 90}>

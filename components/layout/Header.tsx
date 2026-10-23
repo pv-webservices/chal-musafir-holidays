@@ -4,7 +4,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useRef, useState } from 'react';
-import { ChevronDown, Mail, MapPin, Menu, MessageCircle, Phone, X } from 'lucide-react';
+import { ChevronDown, Mail, MapPin, Menu, Phone, X } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 import { addressLine, nav, site, whatsappUrl, type NavItem } from '@/data/site';
 
 export function Header() {
@@ -54,11 +55,13 @@ export function Header() {
     };
   }, []);
 
-  const isActive = (item: NavItem) => {
-    if (item.href === '/') return pathname === '/';
-    if (pathname.startsWith(item.href)) return true;
-    return Boolean(item.children?.some((child) => pathname.startsWith(child.href) && child.href !== '/'));
+  // Compare without trailing slashes so "/about" and "/about/" both match.
+  const current = pathname.replace(/\/+$/, '') || '/';
+  const matches = (href: string) => {
+    const target = href.replace(/\/+$/, '') || '/';
+    return target === '/' ? current === '/' : current === target || current.startsWith(`${target}/`);
   };
+  const isActive = (item: NavItem) => matches(item.href) || Boolean(item.children?.some((child) => matches(child.href)));
 
   return (
     <header ref={headerRef} className="sticky top-0 z-50">
@@ -70,7 +73,7 @@ export function Header() {
             {addressLine}
           </p>
           <div className="flex items-center gap-5">
-            <a href={`mailto:${site.email}`} className="focus-ring flex items-center gap-2 rounded text-blue-100 transition-colors hover:text-white">
+            <a href={`mailto:${site.email}`} className="focus-ring flex min-h-6 items-center gap-2 rounded text-blue-100 transition-colors hover:text-white">
               <Mail className="h-3.5 w-3.5 text-orange-300" aria-hidden />
               {site.email}
             </a>
@@ -78,9 +81,9 @@ export function Header() {
               href={whatsappUrl()}
               target="_blank"
               rel="noopener noreferrer"
-              className="focus-ring flex items-center gap-2 rounded text-blue-100 transition-colors hover:text-white"
+              className="focus-ring flex min-h-6 items-center gap-2 rounded text-blue-100 transition-colors hover:text-white"
             >
-              <MessageCircle className="h-3.5 w-3.5 text-green-400" aria-hidden />
+              <WhatsAppIcon className="h-3.5 w-3.5 text-[#25D366]" />
               WhatsApp
             </a>
             <span className="font-bold text-orange-300">{site.legalNote} · Since {site.established}</span>
@@ -97,9 +100,9 @@ export function Header() {
             <Image
               src={site.logo}
               alt={site.name}
-              width={720}
-              height={355}
-              preload
+              width={162}
+              height={80}
+              loading="eager"
               className={`w-auto object-contain transition-all duration-300 ${scrolled ? 'h-[52px] lg:h-[58px]' : 'h-[58px] lg:h-[80px]'}`}
             />
           </Link>
@@ -166,7 +169,7 @@ export function Header() {
                 Talk to our Travel Expert
               </span>
             </a>
-            <Link href="/quote" className="btn btn-ocean btn-sm focus-ring">
+            <Link href="/quote/" className="btn btn-ocean btn-sm focus-ring">
               <span>Get a Quote</span>
             </Link>
           </div>
@@ -232,28 +235,28 @@ export function Header() {
             </ul>
 
             <div className="mt-5 grid gap-3">
-              <Link href="/quote" className="btn btn-primary focus-ring w-full">
+              <Link href="/quote/" className="btn btn-primary focus-ring w-full">
                 <span>Get a Free Quote</span>
               </Link>
               <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="btn btn-ghost focus-ring w-full">
                 <span className="inline-flex items-center gap-2">
-                  <MessageCircle className="h-4 w-4" aria-hidden /> WhatsApp Us
+                  <WhatsAppIcon className="h-4 w-4" /> WhatsApp Us
                 </span>
               </a>
             </div>
 
             <div className="mt-6 rounded-2xl bg-[var(--surface-alt)] p-4 text-sm">
               <p className="flex gap-2 font-bold text-slate-700">
-                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--brand-red)]" aria-hidden />
+                <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-[var(--brand-red-dark)]" aria-hidden />
                 {addressLine}
               </p>
               <div className="mt-3 grid gap-1.5 text-slate-600">
                 {site.phones.map((phone) => (
-                  <a key={phone} href={`tel:+91${phone}`} className="focus-ring rounded font-bold hover:text-[var(--brand-blue)]">
+                  <a key={phone} href={`tel:+91${phone}`} className="focus-ring inline-flex min-h-6 items-center rounded font-bold hover:text-[var(--brand-blue)]">
                     +91 {phone}
                   </a>
                 ))}
-                <a href={`mailto:${site.email}`} className="focus-ring break-all rounded hover:text-[var(--brand-blue)]">
+                <a href={`mailto:${site.email}`} className="focus-ring inline-flex min-h-6 items-center break-all rounded hover:text-[var(--brand-blue)]">
                   {site.email}
                 </a>
               </div>

@@ -3,17 +3,20 @@ import { Globe2, Heart, MapPinned, Sparkles, TentTree, UsersRound } from 'lucide
 import { Reveal } from '@/components/ui/Reveal';
 
 const items = [
-  { title: 'Domestic Holidays', sub: 'Explore India', href: '/domestic', icon: MapPinned, tone: 'bg-orange-50 text-orange-600' },
-  { title: 'International Holidays', sub: 'Around the World', href: '/international', icon: Globe2, tone: 'bg-blue-50 text-blue-600' },
-  { title: 'Honeymoon Packages', sub: 'For Special Moments', href: '/honeymoon-packages', icon: Heart, tone: 'bg-rose-50 text-rose-600' },
-  { title: 'Family Tours', sub: 'Memories Together', href: '/family-packages', icon: UsersRound, tone: 'bg-emerald-50 text-emerald-600' },
-  { title: 'Group Packages', sub: 'Travel Together', href: '/group-tours', icon: TentTree, tone: 'bg-cyan-50 text-cyan-700' },
-  { title: 'Custom Packages', sub: 'Tailor Made for You', href: '/quote', icon: Sparkles, tone: 'bg-amber-50 text-amber-600' },
+  { title: 'Domestic Holidays', sub: 'Explore India', href: '/domestic/', icon: MapPinned, tone: 'bg-orange-50 text-orange-600' },
+  { title: 'International Holidays', sub: 'Around the World', href: '/international/', icon: Globe2, tone: 'bg-blue-50 text-blue-600' },
+  { title: 'Honeymoon Packages', sub: 'For Special Moments', href: '/honeymoon-packages/', icon: Heart, tone: 'bg-rose-50 text-rose-600' },
+  { title: 'Family Tours', sub: 'Memories Together', href: '/family-packages/', icon: UsersRound, tone: 'bg-emerald-50 text-emerald-600' },
+  { title: 'Group Packages', sub: 'Travel Together', href: '/group-tours/', icon: TentTree, tone: 'bg-cyan-50 text-cyan-700' },
+  { title: 'Custom Packages', sub: 'Tailor Made for You', href: '/quote/', icon: Sparkles, tone: 'bg-amber-50 text-amber-600' },
 ];
 
 export function QuickCategories() {
   return (
-    <section className="section-pad-sm">
+    <section className="section-pad-sm" aria-labelledby="quick-categories-title">
+      <h2 id="quick-categories-title" className="sr-only">
+        Holiday types
+      </h2>
       <div className="container-shell grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-6">
         {items.map(({ title, sub, href, icon: Icon, tone }, index) => (
           <Reveal key={href} delay={index * 70}>

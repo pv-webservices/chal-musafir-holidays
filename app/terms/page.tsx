@@ -1,12 +1,13 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { PageHero } from '@/components/ui/PageHero';
 import { addressLine, site } from '@/data/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Terms & Conditions',
   description: 'The terms on which Chal Musafir Holidays quotes, books and operates travel arrangements.',
-  alternates: { canonical: '/terms' },
-};
+  path: '/terms', image: '/images/hero/services.webp',
+});
 
 const sections: { heading: string; body: string[] }[] = [
   {

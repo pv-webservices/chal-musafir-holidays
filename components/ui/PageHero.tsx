@@ -19,7 +19,7 @@ export function PageHero({
 }) {
   return (
     <section className="relative overflow-hidden bg-[var(--brand-navy)] text-white">
-      <Image src={image} alt="" fill preload className="scale-105 object-cover opacity-55" sizes="100vw" />
+      <Image src={image} alt="" fill loading="eager" fetchPriority="high" className="scale-105 object-cover opacity-55" sizes="100vw" />
       <div className="panel-scrim absolute inset-0" />
       <div className="absolute inset-0 bg-gradient-to-t from-[#041c33] via-transparent to-[#041c33]/45" />
 
@@ -30,11 +30,11 @@ export function PageHero({
         <div className="mb-7">
           <Breadcrumb items={crumbs} tone="dark" />
         </div>
-        <p className="animate-fade-up text-xs font-black uppercase tracking-[0.24em] text-orange-300 md:text-sm">{eyebrow}</p>
-        <h1 className="animate-fade-up mt-4 max-w-4xl text-4xl font-black leading-[1.04] tracking-[-0.04em] md:text-6xl" style={{ animationDelay: '80ms' }}>
+        <p className="animate-rise text-xs font-black uppercase tracking-[0.24em] text-orange-300 md:text-sm">{eyebrow}</p>
+        <h1 className="animate-rise mt-4 max-w-4xl text-4xl font-black leading-[1.04] tracking-[-0.04em] md:text-6xl" style={{ animationDelay: '80ms' }}>
           {title}
         </h1>
-        <p className="animate-fade-up mt-5 max-w-2xl text-base leading-7 text-blue-50/90 md:text-lg md:leading-8" style={{ animationDelay: '160ms' }}>
+        <p className="animate-rise mt-5 max-w-2xl text-base leading-7 text-blue-50/90 md:text-lg md:leading-8" style={{ animationDelay: '160ms' }}>
           {copy}
         </p>
         {children && <div className="animate-fade-up mt-8" style={{ animationDelay: '240ms' }}>{children}</div>}

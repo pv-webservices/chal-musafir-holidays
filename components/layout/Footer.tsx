@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { Facebook, Instagram, Linkedin, Mail, MapPin, MessageCircle, Phone, Youtube, type LucideIcon } from 'lucide-react';
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube, type LucideIcon } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
 import { addressLine, mapLinkUrl, site, socials, whatsappUrl } from '@/data/site';
 import { services } from '@/data/services';
 
@@ -13,15 +14,15 @@ const socialIcons: Record<string, LucideIcon> = {
 
 const quickLinks = [
   ['Home', '/'],
-  ['About Us', '/about'],
-  ['Domestic Holidays', '/domestic'],
-  ['International Holidays', '/international'],
-  ['Holiday Packages', '/packages'],
-  ['Honeymoon Packages', '/honeymoon-packages'],
-  ['Family Holidays', '/family-packages'],
-  ['Group Packages', '/group-tours'],
-  ['Pilgrimage Yatras', '/pilgrimage-packages'],
-  ['Gallery', '/gallery'],
+  ['About Us', '/about/'],
+  ['Domestic Holidays', '/domestic/'],
+  ['International Holidays', '/international/'],
+  ['Holiday Packages', '/packages/'],
+  ['Honeymoon Packages', '/honeymoon-packages/'],
+  ['Family Holidays', '/family-packages/'],
+  ['Group Packages', '/group-tours/'],
+  ['Pilgrimage Yatras', '/pilgrimage-packages/'],
+  ['Gallery', '/gallery/'],
 ] as const;
 
 export function Footer() {
@@ -34,7 +35,7 @@ export function Footer() {
         {/* Brand */}
         <div>
           <div className="inline-flex rounded-2xl bg-white p-3 shadow-lg">
-            <Image src={site.logo} alt={site.name} width={720} height={355} className="h-auto w-[186px]" />
+            <Image src={site.logo} alt={site.name} width={186} height={92} className="h-auto w-[186px]" />
           </div>
           <p className="mt-5 max-w-sm text-sm leading-7 text-blue-100/85">
             Travel planning for domestic and international holidays — air and rail tickets, hotels and resorts, customised packages,
@@ -49,10 +50,10 @@ export function Footer() {
         {/* Quick links */}
         <nav aria-label="Quick links">
           <h2 className="text-sm font-black uppercase tracking-[0.16em] text-orange-300">Quick Links</h2>
-          <ul className="mt-6 grid gap-2.5 text-sm text-blue-50/85">
+          <ul className="mt-6 grid gap-1.5 text-sm text-blue-50/85">
             {quickLinks.map(([label, href]) => (
               <li key={href}>
-                <Link href={href} className="focus-ring inline-block rounded transition-all duration-300 hover:translate-x-1 hover:text-orange-300">
+                <Link href={href} className="focus-ring inline-flex min-h-6 items-center rounded transition-all duration-300 hover:translate-x-1 hover:text-orange-300">
                   {label}
                 </Link>
               </li>
@@ -63,12 +64,12 @@ export function Footer() {
         {/* Services */}
         <nav aria-label="Our services">
           <h2 className="text-sm font-black uppercase tracking-[0.16em] text-orange-300">Our Services</h2>
-          <ul className="mt-6 grid gap-2.5 text-sm text-blue-50/85">
+          <ul className="mt-6 grid gap-1.5 text-sm text-blue-50/85">
             {services.map((service) => (
               <li key={service.slug}>
                 <Link
-                  href={`/services/${service.slug}`}
-                  className="focus-ring inline-block rounded transition-all duration-300 hover:translate-x-1 hover:text-orange-300"
+                  href={`/services/${service.slug}/`}
+                  className="focus-ring inline-flex min-h-6 items-center rounded transition-all duration-300 hover:translate-x-1 hover:text-orange-300"
                 >
                   {service.title}
                 </Link>
@@ -88,22 +89,22 @@ export function Footer() {
 
             <div className="flex gap-3">
               <Phone className="mt-0.5 h-4 w-4 shrink-0 text-orange-300" aria-hidden />
-              <span className="flex flex-col gap-1">
+              <span className="flex flex-col">
                 {site.phones.map((phone) => (
-                  <a key={phone} href={`tel:+91${phone}`} className="focus-ring rounded font-bold transition-colors hover:text-white">
+                  <a key={phone} href={`tel:+91${phone}`} className="focus-ring inline-flex min-h-6 items-center rounded font-bold transition-colors hover:text-white">
                     +91 {phone}
                   </a>
                 ))}
               </span>
             </div>
 
-            <a href={`mailto:${site.email}`} className="focus-ring flex gap-3 rounded break-all transition-colors hover:text-white">
+            <a href={`mailto:${site.email}`} className="focus-ring flex min-h-6 items-center gap-3 rounded break-all transition-colors hover:text-white">
               <Mail className="mt-0.5 h-4 w-4 shrink-0 text-orange-300" aria-hidden />
               {site.email}
             </a>
 
-            <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="focus-ring flex gap-3 rounded transition-colors hover:text-white">
-              <MessageCircle className="mt-0.5 h-4 w-4 shrink-0 text-green-400" aria-hidden />
+            <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="focus-ring flex min-h-6 items-center gap-3 rounded transition-colors hover:text-white">
+              <WhatsAppIcon className="h-4 w-4 shrink-0 text-[#25D366]" />
               WhatsApp enquiry
             </a>
           </div>
@@ -124,7 +125,7 @@ export function Footer() {
                 </a>
               );
             })}
-            <Link href="/quote" className="btn btn-primary btn-sm focus-ring">
+            <Link href="/quote/" className="btn btn-primary btn-sm focus-ring">
               <span>Plan My Trip</span>
             </Link>
           </div>
@@ -137,13 +138,13 @@ export function Footer() {
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </p>
           <div className="flex flex-wrap gap-5">
-            <Link href="/privacy" className="focus-ring rounded transition-colors hover:text-white">
+            <Link href="/privacy/" className="focus-ring inline-flex min-h-6 items-center rounded transition-colors hover:text-white">
               Privacy Policy
             </Link>
-            <Link href="/terms" className="focus-ring rounded transition-colors hover:text-white">
+            <Link href="/terms/" className="focus-ring inline-flex min-h-6 items-center rounded transition-colors hover:text-white">
               Terms &amp; Conditions
             </Link>
-            <Link href="/contact" className="focus-ring rounded transition-colors hover:text-white">
+            <Link href="/contact/" className="focus-ring inline-flex min-h-6 items-center rounded transition-colors hover:text-white">
               Contact
             </Link>
           </div>

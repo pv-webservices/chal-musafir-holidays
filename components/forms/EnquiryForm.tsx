@@ -1,133 +1,329 @@
 'use client';
 
-import { useState } from 'react';
-import { CheckCircle2, Loader2, Send } from 'lucide-react';
-import { site, whatsappUrl } from '@/data/site';
+import { useRouter } from 'next/navigation';
+import { useEffect, useId, useRef, useState } from 'react';
+import { Loader2, Send } from 'lucide-react';
+import { WhatsAppIcon } from '@/components/ui/WhatsAppIcon';
+import { whatsappUrl } from '@/data/site';
+import { absoluteUrl } from '@/lib/seo';
+import {
+  LIMITS,
+  MIN_FILL_MS,
+  THANK_YOU_PATH,
+  buildFormSubmitPayload,
+  buildSubject,
+  failureMessage,
+  firstInvalidField,
+  sendToFormSubmit,
+  todayIso,
+  validateEnquiry,
+  whatsappMessage,
+  type EnquiryErrors,
+  type EnquiryField,
+  type EnquiryValues,
+  type SendResult,
+} from '@/lib/enquiry';
+import {
+  ConsentField,
+  ErrorSummary,
+  FORM_ACTION,
+  FieldShell,
+  FormSubmitHiddenFields,
+  Honeypot,
+  SendFailure,
+  describedBy,
+  fieldId,
+  inputClass,
+  useDraft,
+  usePageShowReset,
+} from './FormParts';
 
 interface EnquiryFormProps {
   compact?: boolean;
-  /** Pre-fills the "interested in" field, e.g. a service name. */
+  /** Topic of the enquiry, e.g. a service name. Used in the email subject. */
   defaultSubject?: string;
+  /** Path of the page the form sits on — sent as "Source page" when JavaScript is off. */
+  sourcePath: string;
 }
 
-type Status = 'idle' | 'sending' | 'success' | 'error';
+type Status = 'idle' | 'sending' | 'failed';
 
-export function EnquiryForm({ compact = false, defaultSubject = '' }: EnquiryFormProps) {
+const LABELS: Partial<Record<EnquiryField, string>> = {
+  name: 'Name',
+  email: 'Email',
+  phone: 'Phone',
+  destination: 'Destination',
+  date: 'Travel date',
+  travellers: 'Travellers',
+  message: 'Message',
+  consent: 'Consent',
+};
+
+const EMPTY: EnquiryValues = { name: '', email: '', phone: '', message: '', consent: false, destination: '', date: '', travellers: '' };
+
+/**
+ * Contact / service enquiry form.
+ * - Without JavaScript: a plain POST to FormSubmit, which redirects to /thank-you/.
+ * - With JavaScript: inline validation, background send to FormSubmit's AJAX
+ *   endpoint (20 s timeout), then a client-side move to /thank-you/.
+ */
+export function EnquiryForm({ compact = false, defaultSubject = '', sourcePath }: EnquiryFormProps) {
+  const formId = useId().replace(/:/g, '');
+  const router = useRouter();
+  const shownAt = useRef(0);
+  const [enhanced, setEnhanced] = useState(false);
+  const [values, setValues] = useState<EnquiryValues>(EMPTY);
+  const [honeypot, setHoneypot] = useState('');
+  const [errors, setErrors] = useState<EnquiryErrors>({});
+  const [showSummary, setShowSummary] = useState(false);
   const [status, setStatus] = useState<Status>('idle');
-  const [message, setMessage] = useState('');
+  const [failure, setFailure] = useState<Exclude<SendResult, { ok: true }> | null>(null);
+  const [tooFast, setTooFast] = useState(false);
+  const [minDate, setMinDate] = useState('');
 
-  const submit = async (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const form = event.currentTarget;
-    setStatus('sending');
-    setMessage('');
+  const formType = defaultSubject ? `Service enquiry — ${defaultSubject}` : 'Contact form';
+  const topic = defaultSubject || 'Contact form';
+  const span = compact ? '' : 'md:col-span-2';
 
-    const payload = Object.fromEntries(new FormData(form).entries());
+  useEffect(() => {
+    shownAt.current = Date.now();
+    setEnhanced(true);
+    setMinDate(todayIso());
+  }, []);
 
-    try {
-      const response = await fetch('/api/enquiry', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ ...payload, enquiryType: defaultSubject || 'General enquiry' }),
-      });
-      const result = await response.json();
-      if (!response.ok) throw new Error(result?.message || 'Unable to send your enquiry.');
+  const clearDraft = useDraft(`enquiry-draft:${sourcePath}`, values, (draft) => setValues((prev) => ({ ...prev, ...draft })));
+  usePageShowReset(() => setStatus('idle'));
 
-      setStatus('success');
-      setMessage(
-        result?.developmentMode
-          ? 'Enquiry validated in development mode. Configure the delivery webhook before launch.'
-          : `Thank you — your enquiry has reached us. We usually reply the same working day. For anything urgent, call ${site.phones[0]}.`,
-      );
-      form.reset();
-    } catch (error: unknown) {
-      setStatus('error');
-      setMessage(error instanceof Error ? error.message : 'Unable to send your enquiry.');
+  const update = <K extends keyof EnquiryValues>(field: K, value: EnquiryValues[K]) => {
+    setValues((prev) => ({ ...prev, [field]: value }));
+    // Once a field has an error, re-check it as the visitor types so the message clears promptly.
+    if (errors[field]) {
+      const next = validateEnquiry({ ...values, [field]: value }, [field]);
+      setErrors((prev) => ({ ...prev, [field]: next[field] }));
     }
   };
 
-  if (status === 'success') {
-    return (
-      <div className="rounded-[22px] border border-green-200 bg-green-50 p-7 text-center">
-        <span className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-green-600 text-white">
-          <CheckCircle2 className="h-7 w-7" aria-hidden />
-        </span>
-        <h3 className="mt-5 text-xl font-black text-green-900">Enquiry sent</h3>
-        <p className="mx-auto mt-3 max-w-md text-sm leading-6 text-green-800">{message}</p>
-        <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <a href={whatsappUrl()} target="_blank" rel="noopener noreferrer" className="btn btn-primary btn-sm focus-ring">
-            <span>WhatsApp Us</span>
-          </a>
-          <button type="button" onClick={() => setStatus('idle')} className="btn btn-ghost btn-sm focus-ring">
-            <span>Send another</span>
-          </button>
-        </div>
-      </div>
+  const validateOnBlur = (field: EnquiryField) => {
+    const fieldValue = values[field];
+    if (fieldValue === '' || fieldValue === undefined) return; // don't nag about untouched empty fields
+    const next = validateEnquiry(values, [field]);
+    setErrors((prev) => ({ ...prev, [field]: next[field] }));
+  };
+
+  const textFields = (): Record<string, string> => ({
+    name: values.name,
+    email: values.email,
+    phone: values.phone,
+    destination: values.destination ?? '',
+    date: values.date ?? '',
+    travellers: values.travellers ?? '',
+    message: values.message,
+    consent: values.consent ? 'Yes — agreed to the privacy policy' : 'No',
+  });
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (status === 'sending') return;
+    setFailure(null);
+    setTooFast(false);
+
+    const found = validateEnquiry(values);
+    setErrors(found);
+    const first = firstInvalidField(found);
+    if (first) {
+      setShowSummary(true);
+      document.getElementById(fieldId(formId, first))?.focus();
+      return;
+    }
+    setShowSummary(false);
+
+    // Honeypot filled → a bot. Pretend success and send nothing.
+    if (honeypot) {
+      router.push(THANK_YOU_PATH);
+      return;
+    }
+    // Submitted implausibly fast → probably a bot, but never silently drop a person.
+    if (Date.now() - shownAt.current < MIN_FILL_MS) {
+      setTooFast(true);
+      return;
+    }
+
+    setStatus('sending');
+    const result = await sendToFormSubmit(
+      buildFormSubmitPayload(textFields(), { formType, topic, sourceUrl: window.location.href, honeypot }),
     );
-  }
+    if (result.ok) {
+      clearDraft();
+      router.push(THANK_YOU_PATH);
+      return;
+    }
+    setFailure(result);
+    setStatus('failed');
+  };
+
+  const waHref = whatsappUrl(whatsappMessage(textFields(), formType));
 
   return (
-    <form onSubmit={submit} className={`grid gap-4 ${compact ? '' : 'md:grid-cols-2'}`} noValidate={false}>
-      <Field label="Name" name="name" placeholder="Your full name" required />
-      <Field label="Phone" name="phone" type="tel" inputMode="tel" placeholder="10-digit mobile number" required pattern="[0-9+\-\s]{10,15}" />
-      <Field label="Email" name="email" type="email" placeholder="you@example.com" />
-      <Field label="Destination" name="destination" placeholder="Where do you want to go?" defaultValue={defaultSubject && !compact ? '' : undefined} />
-      <Field label="Travel date" name="date" type="date" />
-      <Field label="Travellers" name="travellers" type="number" min="1" placeholder="How many people?" />
+    <form
+      action={FORM_ACTION}
+      method="POST"
+      noValidate={enhanced}
+      onSubmit={onSubmit}
+      aria-busy={status === 'sending'}
+      className={`relative grid gap-4 ${compact ? '' : 'md:grid-cols-2'}`}
+    >
+      <FormSubmitHiddenFields subject={buildSubject('website visitor', topic)} formType={formType} sourceUrl={absoluteUrl(sourcePath)} />
+      <Honeypot value={honeypot} onChange={setHoneypot} />
 
-      <label className={compact ? '' : 'md:col-span-2'}>
-        <span className="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">Message</span>
+      {showSummary && (
+        <div className={span}>
+          <ErrorSummary formId={formId} errors={errors} labels={LABELS} />
+        </div>
+      )}
+
+      <FieldShell formId={formId} name="name" label="Name" required error={errors.name}>
+        <input
+          name="name"
+          type="text"
+          autoComplete="name"
+          required
+          minLength={LIMITS.name.min}
+          maxLength={LIMITS.name.max}
+          value={values.name}
+          onChange={(event) => update('name', event.target.value)}
+          onBlur={() => validateOnBlur('name')}
+          className={`${inputClass} border-[var(--line)]`}
+          placeholder="Your full name"
+          {...describedBy(formId, 'name', errors.name)}
+        />
+      </FieldShell>
+
+      <FieldShell formId={formId} name="phone" label="Phone" required error={errors.phone} hint="10–15 digits, with country code if outside India">
+        <input
+          name="phone"
+          type="tel"
+          inputMode="tel"
+          autoComplete="tel"
+          required
+          pattern="[0-9+()\-\s]{10,20}"
+          maxLength={20}
+          value={values.phone}
+          onChange={(event) => update('phone', event.target.value)}
+          onBlur={() => validateOnBlur('phone')}
+          className={`${inputClass} border-[var(--line)]`}
+          placeholder="e.g. 98765 43210"
+          {...describedBy(formId, 'phone', errors.phone, true)}
+        />
+      </FieldShell>
+
+      <FieldShell formId={formId} name="email" label="Email" required error={errors.email}>
+        <input
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          maxLength={LIMITS.email.max}
+          value={values.email}
+          onChange={(event) => update('email', event.target.value)}
+          onBlur={() => validateOnBlur('email')}
+          className={`${inputClass} border-[var(--line)]`}
+          placeholder="you@example.com"
+          {...describedBy(formId, 'email', errors.email)}
+        />
+      </FieldShell>
+
+      <FieldShell formId={formId} name="destination" label="Destination" error={errors.destination}>
+        <input
+          name="destination"
+          type="text"
+          maxLength={LIMITS.destination.max}
+          value={values.destination}
+          onChange={(event) => update('destination', event.target.value)}
+          onBlur={() => validateOnBlur('destination')}
+          className={`${inputClass} border-[var(--line)]`}
+          placeholder="Where do you want to go?"
+          {...describedBy(formId, 'destination', errors.destination)}
+        />
+      </FieldShell>
+
+      <FieldShell formId={formId} name="date" label="Travel date" error={errors.date}>
+        <input
+          name="date"
+          type="date"
+          min={minDate || undefined}
+          value={values.date}
+          onChange={(event) => update('date', event.target.value)}
+          onBlur={() => validateOnBlur('date')}
+          className={`${inputClass} border-[var(--line)]`}
+          {...describedBy(formId, 'date', errors.date)}
+        />
+      </FieldShell>
+
+      <FieldShell formId={formId} name="travellers" label="Travellers" error={errors.travellers}>
+        <input
+          name="travellers"
+          type="number"
+          inputMode="numeric"
+          min={LIMITS.travellers.min}
+          max={LIMITS.travellers.max}
+          value={values.travellers}
+          onChange={(event) => update('travellers', event.target.value)}
+          onBlur={() => validateOnBlur('travellers')}
+          className={`${inputClass} border-[var(--line)]`}
+          placeholder="How many people?"
+          {...describedBy(formId, 'travellers', errors.travellers)}
+        />
+      </FieldShell>
+
+      <FieldShell formId={formId} name="message" label="Message" required error={errors.message} className={span}>
         <textarea
           name="message"
           rows={4}
-          className="focus-ring w-full rounded-xl border border-[var(--line)] px-4 py-3 outline-none transition-colors duration-300 focus:border-[var(--brand-blue)]"
+          required
+          minLength={LIMITS.message.min}
+          maxLength={LIMITS.message.max}
+          value={values.message}
+          onChange={(event) => update('message', event.target.value)}
+          onBlur={() => validateOnBlur('message')}
+          className={`${inputClass} border-[var(--line)]`}
           placeholder="Tell us about your travel plans, budget or anything specific"
+          {...describedBy(formId, 'message', errors.message)}
         />
-      </label>
+      </FieldShell>
 
-      {/* Simple honeypot — real people never fill this in. */}
-      <input type="text" name="company" tabIndex={-1} autoComplete="off" className="hidden" aria-hidden />
+      <div className={span}>
+        <ConsentField formId={formId} checked={values.consent} error={errors.consent} onChange={(checked) => update('consent', checked)} />
+      </div>
 
-      {status === 'error' && (
-        <p role="alert" className={`rounded-xl bg-red-50 p-3.5 text-sm font-bold text-red-700 ${compact ? '' : 'md:col-span-2'}`}>
-          {message}
+      {tooFast && (
+        <p role="alert" className={`rounded-xl bg-amber-50 p-3.5 text-sm font-bold text-amber-900 ${span}`}>
+          That was very quick — please check your details, then press Send again.
         </p>
       )}
 
-      <button type="submit" disabled={status === 'sending'} className={`btn btn-primary focus-ring ${compact ? '' : 'md:col-span-2'}`}>
-        <span className="inline-flex items-center gap-2">
-          {status === 'sending' ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Send className="h-4 w-4" aria-hidden />}
-          {status === 'sending' ? 'Sending…' : 'Send Enquiry'}
-        </span>
-      </button>
+      {failure && (
+        <div className={span}>
+          <SendFailure reason={failure.reason} message={failureMessage(failure.reason)} whatsappHref={waHref} />
+        </div>
+      )}
 
-      <p className={`text-xs leading-5 text-slate-400 ${compact ? '' : 'md:col-span-2'}`}>
-        By sending this form you agree we may contact you about your travel enquiry. See our{' '}
-        <a href="/privacy" className="font-bold text-[var(--brand-blue)] underline">
-          privacy policy
+      <div className={`flex flex-col gap-3 sm:flex-row ${span}`}>
+        <button type="submit" disabled={status === 'sending'} className="btn btn-primary focus-ring flex-1 disabled:cursor-wait disabled:opacity-70">
+          <span className="inline-flex items-center gap-2">
+            {status === 'sending' ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden /> : <Send className="h-4 w-4" aria-hidden />}
+            {status === 'sending' ? 'Sending…' : 'Send Enquiry'}
+          </span>
+        </button>
+        {/* Opens WhatsApp with the message pre-filled. Not subject to the bot timer. */}
+        <a href={waHref} target="_blank" rel="noopener noreferrer" className="btn btn-ghost focus-ring">
+          <span className="inline-flex items-center gap-2">
+            <WhatsAppIcon className="h-4 w-4" /> Send via WhatsApp
+          </span>
         </a>
-        .
+      </div>
+      <p className={`sr-only ${span}`} aria-live="polite">
+        {status === 'sending' ? 'Sending your enquiry…' : ''}
       </p>
     </form>
-  );
-}
-
-function Field({
-  label,
-  name,
-  ...rest
-}: { label: string; name: string } & React.InputHTMLAttributes<HTMLInputElement>) {
-  return (
-    <label>
-      <span className="mb-1.5 block text-xs font-black uppercase tracking-wide text-slate-500">
-        {label}
-        {rest.required && <span className="text-[var(--brand-red)]"> *</span>}
-      </span>
-      <input
-        name={name}
-        className="focus-ring w-full rounded-xl border border-[var(--line)] px-4 py-3 outline-none transition-colors duration-300 focus:border-[var(--brand-blue)]"
-        {...rest}
-      />
-    </label>
   );
 }

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import { CalendarRange, Clock3, Info, MapPin } from 'lucide-react';
 import { PageHero } from '@/components/ui/PageHero';
@@ -10,12 +11,11 @@ import { PackageCard } from '@/components/ui/PackageCard';
 import { yatras } from '@/data/pilgrimage';
 import { packages } from '@/data/packages';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Pilgrimage Packages',
-  description:
-    'Pilgrimage yatra planning for Mata Vaishno Devi, Shirdi, Chardham, the Amarnath helicopter yatra and Kailash Mansarovar — permits, stays and transport arranged.',
-  alternates: { canonical: '/pilgrimage-packages' },
-};
+  description: 'Pilgrimage yatra planning for Mata Vaishno Devi, Shirdi, Chardham, the Amarnath helicopter yatra and Kailash Mansarovar — permits, stays and transport arranged.',
+  path: '/pilgrimage-packages', image: '/images/hero/pilgrimage.webp',
+});
 
 export default function PilgrimagePage() {
   const pilgrimagePackages = packages.filter((item) => item.type === 'Pilgrimage');
@@ -29,7 +29,7 @@ export default function PilgrimagePage() {
         image="/images/hero/pilgrimage.webp"
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Pilgrimage Packages' }]}
       >
-        <ButtonLink href="/quote?trip=Pilgrimage" variant="primary" size="lg" withArrow>
+        <ButtonLink href="/quote/?trip=Pilgrimage" variant="primary" size="lg" withArrow>
           Request a Yatra Itinerary
         </ButtonLink>
       </PageHero>
@@ -92,10 +92,10 @@ export default function PilgrimagePage() {
                     </p>
 
                     <div className="mt-6 flex flex-wrap gap-3">
-                      <ButtonLink href={`/quote?trip=Pilgrimage&destination=${encodeURIComponent(yatra.name)}`} variant="primary" withArrow>
+                      <ButtonLink href={`/quote/?trip=Pilgrimage&destination=${encodeURIComponent(yatra.name)}`} variant="primary" withArrow>
                         Request Itinerary
                       </ButtonLink>
-                      <ButtonLink href="/contact" variant="ghost">
+                      <ButtonLink href="/contact/" variant="ghost">
                         Ask a Question
                       </ButtonLink>
                     </div>
@@ -110,7 +110,7 @@ export default function PilgrimagePage() {
       {pilgrimagePackages.length > 0 && (
         <section className="section-pad bg-[var(--surface)]">
           <div className="container-shell">
-            <SectionHeading eyebrow="Detailed itinerary" title="Yatra packages" action={{ label: 'All packages', href: '/packages' }} />
+            <SectionHeading eyebrow="Detailed itinerary" title="Yatra packages" action={{ label: 'All packages', href: '/packages/' }} />
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {pilgrimagePackages.map((item) => (
                 <PackageCard key={item.slug} item={item} />

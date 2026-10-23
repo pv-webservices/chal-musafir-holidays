@@ -10,7 +10,7 @@ interface PackageCardProps {
 export function PackageCard({ item }: PackageCardProps) {
   return (
     <article className="card-motion card-rim group relative overflow-hidden rounded-[26px] border border-[var(--line)] bg-white soft-shadow">
-      <Link href={`/packages/${item.slug}`} className="focus-ring block">
+      <Link href={`/packages/${item.slug}/`} className="focus-ring block">
         <div className="relative aspect-[16/11] overflow-hidden">
           <Image
             src={item.image}

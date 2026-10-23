@@ -12,8 +12,9 @@ export const site = {
   proprietors: ['Sunjay Gupta', 'Akash Gupta'],
   phones: ['8909286000', '6397040089', '9997222499'],
   email: 'chalmusafirholidays@gmail.com',
-  website: 'www.chalmusafir.co.in',
-  origin: 'https://www.chalmusafir.co.in',
+  website: 'chalmusafirholidays.com',
+  /** Canonical origin: HTTPS, no www, no trailing slash. */
+  origin: 'https://chalmusafirholidays.com',
   address: {
     line1: 'A-49, Lajpat Nagar',
     line2: 'Behind Bank of Baroda',
@@ -24,7 +25,11 @@ export const site = {
   primaryPhone: '+918909286000',
   whatsapp: '918909286000',
   mapQuery: 'A-49 Lajpat Nagar, Behind Bank of Baroda, Moradabad, Uttar Pradesh',
-  logo: '/brand/chal-musafir-logo.webp',
+  logo: '/images/brand/chal-musafir-logo.webp',
+  /** Square PNG used for the Organization logo in structured data. */
+  logoSquare: '/icons/icon-512x512.png',
+  /** Shown as sitemap <lastmod>. Bump when page content changes. */
+  contentUpdated: '2026-10-23',
 } as const;
 
 export const addressLine = `${site.address.line1}, ${site.address.line2}, ${site.address.city}, ${site.address.state}`;
@@ -52,28 +57,28 @@ export type NavItem = {
 
 export const nav: NavItem[] = [
   { label: 'Home', href: '/' },
-  { label: 'About Us', href: '/about' },
+  { label: 'About Us', href: '/about/' },
   {
     label: 'Destinations',
-    href: '/destinations',
+    href: '/destinations/',
     children: [
-      { label: 'Domestic Holidays', href: '/domestic', description: 'Kerala, Rajasthan, Goa, Himachal & more' },
-      { label: 'International Holidays', href: '/international', description: 'Thailand, Dubai, Europe, Singapore & more' },
-      { label: 'All Destinations', href: '/destinations', description: 'Browse every destination we plan' },
+      { label: 'Domestic Holidays', href: '/domestic/', description: 'Kerala, Rajasthan, Goa, Himachal & more' },
+      { label: 'International Holidays', href: '/international/', description: 'Thailand, Dubai, Europe, Singapore & more' },
+      { label: 'All Destinations', href: '/destinations/', description: 'Browse every destination we plan' },
     ],
   },
   {
     label: 'Packages',
-    href: '/packages',
+    href: '/packages/',
     children: [
-      { label: 'All Holiday Packages', href: '/packages', description: 'Filter by region and traveller type' },
-      { label: 'Honeymoon Packages', href: '/honeymoon-packages', description: 'Romantic getaways for two' },
-      { label: 'Family Holidays', href: '/family-packages', description: 'Trips that work for every age' },
-      { label: 'Group Packages', href: '/group-tours', description: 'Friends, colleagues and large groups' },
-      { label: 'Pilgrimage Yatras', href: '/pilgrimage-packages', description: 'Vaishno Devi, Chardham, Shirdi & more' },
+      { label: 'All Holiday Packages', href: '/packages/', description: 'Filter by region and traveller type' },
+      { label: 'Honeymoon Packages', href: '/honeymoon-packages/', description: 'Romantic getaways for two' },
+      { label: 'Family Holidays', href: '/family-packages/', description: 'Trips that work for every age' },
+      { label: 'Group Packages', href: '/group-tours/', description: 'Friends, colleagues and large groups' },
+      { label: 'Pilgrimage Yatras', href: '/pilgrimage-packages/', description: 'Vaishno Devi, Chardham, Shirdi & more' },
     ],
   },
-  { label: 'Services', href: '/services' },
-  { label: 'Gallery', href: '/gallery' },
-  { label: 'Contact', href: '/contact' },
+  { label: 'Services', href: '/services/' },
+  { label: 'Gallery', href: '/gallery/' },
+  { label: 'Contact', href: '/contact/' },
 ];

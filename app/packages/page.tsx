@@ -1,15 +1,15 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { PageHero } from '@/components/ui/PageHero';
 import { PackageFilters } from '@/components/packages/PackageFilters';
 import { CTASection } from '@/components/ui/CTASection';
 import { packages } from '@/data/packages';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Holiday Packages',
-  description:
-    'Browse domestic and international holiday package ideas — family, honeymoon, group, heritage and pilgrimage itineraries — and request a customised quotation.',
-  alternates: { canonical: '/packages' },
-};
+  description: 'Browse domestic and international holiday package ideas — family, honeymoon, group, heritage and pilgrimage itineraries — and request a customised quotation.',
+  path: '/packages', image: '/images/hero/packages.webp',
+});
 
 export default function PackagesPage() {
   return (

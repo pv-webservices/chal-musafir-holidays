@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { PageHero } from '@/components/ui/PageHero';
 import { DestinationCard } from '@/components/ui/DestinationCard';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -9,12 +10,11 @@ import { ButtonLink } from '@/components/ui/Buttons';
 import { domesticDestinations } from '@/data/destinations';
 import { packages } from '@/data/packages';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Domestic Holidays',
-  description:
-    'Domestic holiday planning across Kerala, Rajasthan, Goa, Himachal, Uttarakhand, Madhya Pradesh, Uttar Pradesh, South India, Eastern India and Maharashtra.',
-  alternates: { canonical: '/domestic' },
-};
+  description: 'Domestic holiday planning across Kerala, Rajasthan, Goa, Himachal, Uttarakhand, Madhya Pradesh, Uttar Pradesh, South India, Eastern India and Maharashtra.',
+  path: '/domestic', image: '/images/hero/domestic.webp',
+});
 
 const moods = [
   { label: 'Beach & islands', slugs: 'Goa, Kerala coast, Konkan' },
@@ -37,7 +37,7 @@ export default function DomesticPage() {
         image="/images/hero/domestic.webp"
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Domestic Holidays' }]}
       >
-        <ButtonLink href="/quote?trip=Domestic" variant="primary" size="lg" withArrow>
+        <ButtonLink href="/quote/?trip=Domestic" variant="primary" size="lg" withArrow>
           Plan an India Trip
         </ButtonLink>
       </PageHero>
@@ -52,7 +52,7 @@ export default function DomesticPage() {
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {domesticDestinations.map((item, index) => (
               <Reveal key={item.slug} delay={(index % 5) * 70}>
-                <DestinationCard item={item} priority={index < 5} />
+                <DestinationCard item={item} />
               </Reveal>
             ))}
           </div>
@@ -73,7 +73,7 @@ export default function DomesticPage() {
                 ))}
               </div>
               <div className="mt-8">
-                <ButtonLink href="/quote?trip=Domestic" variant="ocean" withArrow>
+                <ButtonLink href="/quote/?trip=Domestic" variant="ocean" withArrow>
                   Tell us your mood
                 </ButtonLink>
               </div>
@@ -88,7 +88,7 @@ export default function DomesticPage() {
             eyebrow="Featured itineraries"
             title="Domestic package ideas"
             copy="Itinerary concepts, not fixed offers. Final stays, transport and pricing are confirmed in your written quotation."
-            action={{ label: 'All packages', href: '/packages' }}
+            action={{ label: 'All packages', href: '/packages/' }}
           />
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {domesticPackages.map((item, index) => (

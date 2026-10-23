@@ -3,9 +3,17 @@ import { site } from '@/data/site';
 import { destinations } from '@/data/destinations';
 import { packages } from '@/data/packages';
 import { services } from '@/data/services';
+import { absoluteUrl } from '@/lib/seo';
 
-const staticRoutes: { path: string; priority: number; changeFrequency: MetadataRoute.Sitemap[number]['changeFrequency'] }[] = [
-  { path: '', priority: 1, changeFrequency: 'weekly' },
+type ChangeFrequency = MetadataRoute.Sitemap[number]['changeFrequency'];
+
+/**
+ * Every indexable page — and only those. Utility pages (/thank-you/, the 404)
+ * are noindex and deliberately absent. `npm run audit` fails if this list and
+ * the built pages ever disagree.
+ */
+const staticRoutes: { path: string; priority: number; changeFrequency: ChangeFrequency }[] = [
+  { path: '/', priority: 1, changeFrequency: 'weekly' },
   { path: '/about', priority: 0.7, changeFrequency: 'yearly' },
   { path: '/destinations', priority: 0.9, changeFrequency: 'monthly' },
   { path: '/domestic', priority: 0.9, changeFrequency: 'monthly' },
@@ -24,32 +32,18 @@ const staticRoutes: { path: string; priority: number; changeFrequency: MetadataR
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date();
+  const lastModified = site.contentUpdated;
+  const detail = (path: string) => ({ url: absoluteUrl(path), lastModified, changeFrequency: 'monthly' as const, priority: 0.7 });
 
   return [
     ...staticRoutes.map((route) => ({
-      url: `${site.origin}${route.path}`,
+      url: absoluteUrl(route.path),
       lastModified,
       changeFrequency: route.changeFrequency,
       priority: route.priority,
     })),
-    ...destinations.map((item) => ({
-      url: `${site.origin}/destinations/${item.slug}`,
-      lastModified,
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })),
-    ...packages.map((item) => ({
-      url: `${site.origin}/packages/${item.slug}`,
-      lastModified,
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })),
-    ...services.map((item) => ({
-      url: `${site.origin}/services/${item.slug}`,
-      lastModified,
-      changeFrequency: 'monthly' as const,
-      priority: 0.7,
-    })),
+    ...destinations.map((item) => detail(`/destinations/${item.slug}`)),
+    ...packages.map((item) => detail(`/packages/${item.slug}`)),
+    ...services.map((item) => detail(`/services/${item.slug}`)),
   ];
 }

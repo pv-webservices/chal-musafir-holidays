@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { clampDescription, pageMetadata } from '@/lib/seo';
 import { notFound } from 'next/navigation';
 import { CheckCircle2 } from 'lucide-react';
 import { services, getService } from '@/data/services';
@@ -19,12 +20,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = getService(slug);
   if (!item) return {};
-  return {
-    title: item.title,
-    description: item.overview,
-    alternates: { canonical: `/services/${item.slug}` },
-    openGraph: { title: item.title, description: item.overview, images: [item.image] },
-  };
+  return pageMetadata({
+    title: `${item.title} – Travel Service`,
+    description: clampDescription(item.overview),
+    path: `/services/${item.slug}`,
+    image: item.image,
+    imageAlt: item.title,
+  });
 }
 
 const baseFaqs = [
@@ -56,13 +58,13 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
         title={item.title}
         copy={item.overview}
         image={item.image}
-        crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services' }, { label: item.title }]}
+        crumbs={[{ label: 'Home', href: '/' }, { label: 'Services', href: '/services/' }, { label: item.title }]}
       >
         <div className="flex flex-wrap gap-3">
-          <ButtonLink href={`/quote?service=${encodeURIComponent(item.title)}`} variant="primary" size="lg" withArrow>
+          <ButtonLink href={`/quote/?service=${encodeURIComponent(item.title)}`} variant="primary" size="lg" withArrow>
             Enquire Now
           </ButtonLink>
-          <ButtonLink href="/services" variant="on-dark" size="lg">
+          <ButtonLink href="/services/" variant="on-dark" size="lg">
             All Services
           </ButtonLink>
         </div>
@@ -120,9 +122,9 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
             <div className="rounded-[28px] border border-[var(--line)] bg-white p-6 card-shadow md:p-8">
               <h2 className="text-2xl font-black">Enquire about {item.title}</h2>
               <p className="section-copy mt-3 mb-7 text-[15px]">
-                Send the details and we will come back with real options — usually the same working day.
+                Send the details and we will come back with real options.
               </p>
-              <EnquiryForm compact defaultSubject={item.title} />
+              <EnquiryForm compact defaultSubject={item.title} sourcePath={`/services/${item.slug}/`} />
             </div>
           </Reveal>
         </div>
@@ -130,7 +132,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
       <section className="section-pad">
         <div className="container-shell">
-          <SectionHeading eyebrow="Also available" title="Other travel services" action={{ label: 'All services', href: '/services' }} />
+          <SectionHeading eyebrow="Also available" title="Other travel services" action={{ label: 'All services', href: '/services/' }} />
           <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
             {others.map((service) => (
               <ServiceCard key={service.slug} item={service} />

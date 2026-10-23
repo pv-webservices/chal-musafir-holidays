@@ -41,11 +41,11 @@ export function PopularDestinations() {
           eyebrow="Explore places"
           title="Popular Destinations"
           copy="A snapshot of where we send travellers most often. Every destination below has a full guide with the best season, suggested duration and what to actually do there."
-          action={{ label: 'View All Destinations', href: '/destinations' }}
+          action={{ label: 'View All Destinations', href: '/destinations/' }}
         />
         <Rail label="Popular destinations" itemClassName="w-[240px] sm:w-[260px]">
           {featuredDestinations.map((item) => (
-            <DestinationCard key={item.slug} item={item} />
+            <DestinationCard key={item.slug} item={item} sizes="260px" />
           ))}
         </Rail>
       </div>
@@ -72,14 +72,14 @@ export function PromoBanners() {
             />
             <div className="absolute inset-0 bg-gradient-to-r from-white/95 via-white/70 to-transparent" />
             <div className="relative z-10 flex max-w-sm flex-col justify-center p-8 md:p-10">
-              <span className="font-display text-3xl font-black italic leading-tight tracking-tight text-[var(--brand-red)] md:text-4xl">
+              <span className="font-display text-3xl font-black italic leading-tight tracking-tight text-[var(--brand-red-dark)] md:text-4xl">
                 Special
                 <br />
                 Honeymoon Packages
               </span>
               <p className="mt-4 leading-7 text-slate-700">Romantic getaways for a lifetime of memories — Bali, Mauritius, Kerala, Himachal and more.</p>
               <div className="mt-7">
-                <ButtonLink href="/honeymoon-packages" variant="primary" withArrow>
+                <ButtonLink href="/honeymoon-packages/" variant="primary" withArrow>
                   View Packages
                 </ButtonLink>
               </div>
@@ -107,7 +107,7 @@ export function PromoBanners() {
                 </h3>
                 <p className="mt-4 leading-7 text-blue-50/90">Explore the world with {site.name} — visa, tickets, stays and sightseeing handled together.</p>
                 <div className="mt-6">
-                  <ButtonLink href="/international" variant="on-dark" withArrow>
+                  <ButtonLink href="/international/" variant="on-dark" withArrow>
                     View Packages
                   </ButtonLink>
                 </div>
@@ -117,11 +117,11 @@ export function PromoBanners() {
                 {thumbs.map((thumb) => (
                   <Link
                     key={thumb.slug}
-                    href={`/destinations/${thumb.slug}`}
+                    href={`/destinations/${thumb.slug}/`}
                     className="focus-ring relative aspect-square overflow-hidden rounded-xl border-2 border-white/40 transition-all duration-500 hover:-translate-y-1.5 hover:border-white"
                     aria-label={thumb.name}
                   >
-                    <Image src={thumb.image} alt={thumb.name} fill className="object-cover" sizes="100px" />
+                    <Image src={thumb.image} alt="" fill className="object-cover" sizes="100px" />
                     <span className="absolute inset-x-0 bottom-0 bg-black/55 px-1 py-1 text-center text-[9px] font-black uppercase tracking-wide">
                       {thumb.name}
                     </span>
@@ -214,7 +214,7 @@ export function ServicesSection() {
           eyebrow="How we help"
           title="Our Services"
           copy="Everything listed on our brochure, handled in one place — air and rail tickets, hotels and resorts, holiday and group packages, luxury train tours, cruises, visas and travel insurance."
-          action={{ label: 'View All Services', href: '/services' }}
+          action={{ label: 'View All Services', href: '/services/' }}
         />
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {services.slice(0, 10).map((item, index) => (
@@ -237,7 +237,7 @@ export function FeaturedPackages() {
           eyebrow="Ready-made starting points"
           title="Featured Holiday Packages"
           copy="Itinerary concepts we run most often. Use one as-is or treat it as a starting point — every day can be reshaped around you."
-          action={{ label: 'Browse All Packages', href: '/packages' }}
+          action={{ label: 'Browse All Packages', href: '/packages/' }}
         />
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
           {packages.slice(0, 6).map((item, index) => (
@@ -260,13 +260,13 @@ export function PilgrimageStrip() {
           eyebrow="Yatra planning"
           title="Pilgrimage Packages"
           copy="Registration, permits, hill-safe vehicles and stays near the temple — the parts of a yatra that are hardest to arrange from home."
-          action={{ label: 'All Pilgrimage Yatras', href: '/pilgrimage-packages' }}
+          action={{ label: 'All Pilgrimage Yatras', href: '/pilgrimage-packages/' }}
         />
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
           {yatras.map((yatra, index) => (
             <Reveal key={yatra.slug} delay={(index % 5) * 70}>
               <Link
-                href={`/pilgrimage-packages#${yatra.slug}`}
+                href={`/pilgrimage-packages/#${yatra.slug}`}
                 className="card-motion card-rim group focus-ring relative block h-full overflow-hidden rounded-[22px] bg-slate-900"
               >
                 <div className="relative aspect-[4/5] overflow-hidden">
@@ -404,10 +404,10 @@ export function InspirationStrip() {
               Seven short questions — where, when, who, budget and preferences — and you get a real itinerary back, not a generic brochure.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
-              <ButtonLink href="/quote" variant="primary" size="lg" withArrow>
+              <ButtonLink href="/quote/" variant="primary" size="lg" withArrow>
                 Start Planning
               </ButtonLink>
-              <ButtonLink href="/destinations" variant="ghost" size="lg">
+              <ButtonLink href="/destinations/" variant="ghost" size="lg">
                 Browse Destinations
               </ButtonLink>
             </div>
@@ -447,7 +447,7 @@ export function HomeFAQ() {
             Still unsure about something? Call the office on {site.phones[0]} — you will speak to someone who actually plans the trips.
           </p>
           <div className="mt-8">
-            <ButtonLink href="/contact" variant="ocean" withArrow>
+            <ButtonLink href="/contact/" variant="ocean" withArrow>
               Talk to a Travel Expert
             </ButtonLink>
           </div>

@@ -1,16 +1,18 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { Suspense } from 'react';
 import { Clock, MessageCircle, Phone } from 'lucide-react';
 import { PageHero } from '@/components/ui/PageHero';
 import { QuoteForm } from '@/components/forms/QuoteForm';
+import { EnquiryForm } from '@/components/forms/EnquiryForm';
 import { Reveal } from '@/components/ui/Reveal';
 import { site, whatsappUrl } from '@/data/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Get a Quote',
   description: 'Plan a domestic, international, honeymoon, family, group or pilgrimage trip with Chal Musafir Holidays in seven short steps.',
-  alternates: { canonical: '/quote' },
-};
+  path: '/quote', image: '/images/hero/contact.webp',
+});
 
 export default function QuotePage() {
   return (
@@ -25,13 +27,23 @@ export default function QuotePage() {
 
       <section className="section-pad bg-[var(--surface)]">
         <div className="container-shell grid gap-8 lg:grid-cols-[1fr_300px]">
-          <Suspense
-            fallback={
-              <div className="rounded-[30px] border border-[var(--line)] bg-white p-9 text-slate-500 card-shadow">Loading trip planner…</div>
-            }
-          >
-            <QuoteForm />
-          </Suspense>
+          <div>
+            <Suspense
+              fallback={
+                <div className="js-only rounded-[30px] border border-[var(--line)] bg-white p-9 text-slate-500 card-shadow">Loading trip planner…</div>
+              }
+            >
+              <QuoteForm />
+            </Suspense>
+            {/* Without JavaScript the step-by-step planner cannot run, so offer the plain enquiry form instead. */}
+            <noscript>
+              <div className="rounded-[30px] border border-[var(--line)] bg-white p-6 card-shadow md:p-9">
+                <h2 className="text-2xl font-black">Send us your trip details</h2>
+                <p className="section-copy mb-7 mt-3 text-[15px]">The step-by-step planner needs JavaScript. This form reaches the same team.</p>
+                <EnquiryForm defaultSubject="Trip planner" sourcePath="/quote/" />
+              </div>
+            </noscript>
+          </div>
 
           <Reveal delay={120}>
             <aside className="sticky top-28 grid gap-4">
@@ -42,7 +54,7 @@ export default function QuotePage() {
                 <h2 className="mt-4 text-lg font-black">What happens next</h2>
                 <ol className="mt-4 grid gap-3 text-sm leading-6 text-slate-600">
                   <li>1. We read your request and check practical options.</li>
-                  <li>2. You get a call or email — usually the same working day.</li>
+                  <li>2. We call or email you to talk it through.</li>
                   <li>3. We send a written itinerary and quotation to refine together.</li>
                 </ol>
               </div>

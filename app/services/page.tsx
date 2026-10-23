@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '@/lib/seo';
 import { PageHero } from '@/components/ui/PageHero';
 import { ServiceCard } from '@/components/ui/ServiceCard';
 import { SectionHeading } from '@/components/ui/SectionHeading';
@@ -9,12 +10,11 @@ import { FAQAccordion } from '@/components/ui/FAQAccordion';
 import { services } from '@/data/services';
 import { site } from '@/data/site';
 
-export const metadata: Metadata = {
+export const metadata: Metadata = pageMetadata({
   title: 'Travel Services',
-  description:
-    'Air tickets, rail tickets, hotel and resort booking, holiday and group packages, LTC / luxury train tours, cruise holidays, visa assistance and travel insurance.',
-  alternates: { canonical: '/services' },
-};
+  description: 'Air tickets, rail tickets, hotel and resort booking, holiday and group packages, LTC / luxury train tours, cruise holidays, visa assistance and travel insurance.',
+  path: '/services', image: '/images/hero/services.webp',
+});
 
 export default function ServicesPage() {
   return (
@@ -26,7 +26,7 @@ export default function ServicesPage() {
         image="/images/hero/services.webp"
         crumbs={[{ label: 'Home', href: '/' }, { label: 'Services' }]}
       >
-        <ButtonLink href="/quote" variant="primary" size="lg" withArrow>
+        <ButtonLink href="/quote/" variant="primary" size="lg" withArrow>
           Enquire About a Service
         </ButtonLink>
       </PageHero>
@@ -60,7 +60,7 @@ export default function ServicesPage() {
               coordinated by the same person — so nothing falls between two suppliers.
             </p>
             <div className="mt-8">
-              <ButtonLink href="/contact" variant="ocean" withArrow>
+              <ButtonLink href="/contact/" variant="ocean" withArrow>
                 Talk to Our Team
               </ButtonLink>
             </div>

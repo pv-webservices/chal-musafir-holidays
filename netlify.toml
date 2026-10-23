@@ -6,11 +6,38 @@
   NODE_VERSION = "20"
   NEXT_TELEMETRY_DISABLED = "1"
 
-# Netlify's official Next.js runtime handles App Router routing, the
-# /api/enquiry route handler and next/image optimisation.
+# Netlify's official Next.js runtime handles App Router routing, 404 status
+# codes, trailing-slash redirects and next/image optimisation.
 [[plugins]]
   package = "@netlify/plugin-nextjs"
 
+# ---------------------------------------------------------------------------
+# Canonical host: https://chalmusafirholidays.com (no www).
+# Netlify already forces HTTPS once the certificate is issued; these rules make
+# www → apex explicit and a single hop.
+# ---------------------------------------------------------------------------
+[[redirects]]
+  from = "https://www.chalmusafirholidays.com/*"
+  to = "https://chalmusafirholidays.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://www.chalmusafirholidays.com/*"
+  to = "https://chalmusafirholidays.com/:splat"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "http://chalmusafirholidays.com/*"
+  to = "https://chalmusafirholidays.com/:splat"
+  status = 301
+  force = true
+
+# ---------------------------------------------------------------------------
+# Headers. Page responses get their security headers from next.config.ts;
+# these cover files Netlify serves straight from the CDN.
+# ---------------------------------------------------------------------------
 [[headers]]
   for = "/*"
   [headers.values]
@@ -19,18 +46,21 @@
     Referrer-Policy = "strict-origin-when-cross-origin"
     Permissions-Policy = "camera=(), microphone=(), geolocation=(), payment=()"
 
-# Generated, content-hashed assets can be cached forever.
+# Content-hashed build output can be cached forever.
 [[headers]]
   for = "/_next/static/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
 
+# Images keep stable file names (not hashed): cache 30 days, not forever, so a
+# replaced photo still reaches visitors.
 [[headers]]
   for = "/images/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=2592000"
 
+# Icons keep stable names, so revalidate daily rather than caching forever.
 [[headers]]
-  for = "/brand/*"
+  for = "/icons/*"
   [headers.values]
-    Cache-Control = "public, max-age=31536000, immutable"
+    Cache-Control = "public, max-age=86400"

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { clampDescription, pageMetadata } from '@/lib/seo';
 import Image from 'next/image';
 import { notFound } from 'next/navigation';
 import { CalendarDays, Clock3, Compass, MapPinned, Sparkles } from 'lucide-react';
@@ -22,12 +23,13 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const item = getDestination(slug);
   if (!item) return {};
-  return {
+  return pageMetadata({
     title: `${item.name} Holidays`,
-    description: item.overview,
-    alternates: { canonical: `/destinations/${item.slug}` },
-    openGraph: { title: `${item.name} Holidays`, description: item.overview, images: [item.image] },
-  };
+    description: clampDescription(item.overview),
+    path: `/destinations/${item.slug}`,
+    image: item.image,
+    imageAlt: `${item.name} — ${item.subtitle}`,
+  });
 }
 
 export default async function DestinationPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -42,7 +44,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
     <>
       {/* Editorial hero */}
       <section className="relative overflow-hidden bg-[var(--brand-navy)] text-white">
-        <Image src={item.image} alt="" fill preload className="object-cover opacity-25 blur-sm" sizes="100vw" />
+        <Image src={item.image} alt="" fill loading="eager" className="object-cover opacity-25 blur-sm" sizes="480px" />
         <div className="absolute inset-0 bg-gradient-to-b from-[#041c33]/92 via-[#052a49]/88 to-[#041c33]" />
 
         <div className="container-shell relative z-10 py-12 md:py-16">
@@ -50,7 +52,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             tone="dark"
             items={[
               { label: 'Home', href: '/' },
-              { label: item.region === 'domestic' ? 'Domestic' : 'International', href: item.region === 'domestic' ? '/domestic' : '/international' },
+              { label: item.region === 'domestic' ? 'Domestic' : 'International', href: item.region === 'domestic' ? '/domestic/' : '/international/' },
               { label: item.name },
             ]}
           />
@@ -70,7 +72,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
               </div>
 
               <div className="mt-9 flex flex-wrap gap-3">
-                <ButtonLink href={`/quote?destination=${encodeURIComponent(item.name)}`} variant="primary" size="lg" withArrow>
+                <ButtonLink href={`/quote/?destination=${encodeURIComponent(item.name)}`} variant="primary" size="lg" withArrow>
                   Request Itinerary
                 </ButtonLink>
                 <ButtonLink href={`tel:${site.primaryPhone}`} variant="on-dark" size="lg">
@@ -80,7 +82,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             </div>
 
             <div className="relative mx-auto aspect-[4/5] w-full max-w-sm overflow-hidden rounded-[30px] shadow-[0_30px_80px_rgba(0,0,0,0.45)] lg:max-w-none">
-              <Image src={item.image} alt={item.name} fill preload className="object-cover" sizes="(max-width: 1024px) 90vw, 40vw" />
+              <Image src={item.image} alt={`${item.name} — ${item.subtitle}`} fill loading="eager" fetchPriority="high" className="object-cover" sizes="(max-width: 1024px) 90vw, 40vw" />
             </div>
           </div>
         </div>
@@ -137,7 +139,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
       {related.length > 0 && (
         <section className="section-pad bg-[var(--surface)]">
           <div className="container-shell">
-            <SectionHeading eyebrow="Ready to go" title={`${item.name} packages`} action={{ label: 'All packages', href: '/packages' }} />
+            <SectionHeading eyebrow="Ready to go" title={`${item.name} packages`} action={{ label: 'All packages', href: '/packages/' }} />
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {related.map((pkg) => (
                 <PackageCard key={pkg.slug} item={pkg} />
@@ -186,10 +188,10 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
                 Share your dates and who is travelling — we will build the route around them and come back with a written quotation.
               </p>
               <div className="mt-8 flex flex-wrap gap-3">
-                <ButtonLink href={`/quote?destination=${encodeURIComponent(item.name)}`} variant="primary" withArrow>
+                <ButtonLink href={`/quote/?destination=${encodeURIComponent(item.name)}`} variant="primary" withArrow>
                   Request Itinerary
                 </ButtonLink>
-                <ButtonLink href="/contact" variant="on-dark">
+                <ButtonLink href="/contact/" variant="on-dark">
                   Contact Us
                 </ButtonLink>
               </div>
@@ -204,7 +206,7 @@ export default async function DestinationPage({ params }: { params: Promise<{ sl
             <SectionHeading
               eyebrow="Keep exploring"
               title={item.region === 'domestic' ? 'More of India' : 'More of the world'}
-              action={{ label: 'All destinations', href: '/destinations' }}
+              action={{ label: 'All destinations', href: '/destinations/' }}
             />
             <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5">
               {siblings.map((sibling) => (
@@ -226,7 +228,7 @@ function Fact({ icon: Icon, label, value }: { icon: typeof CalendarDays; label: 
       <span className="flex h-12 w-12 items-center justify-center rounded-xl bg-[var(--surface-alt)] text-[var(--brand-blue)]">
         <Icon className="h-5 w-5" aria-hidden />
       </span>
-      <p className="mt-4 text-xs font-black uppercase tracking-wide text-slate-400">{label}</p>
+      <p className="mt-4 text-xs font-black uppercase tracking-wide text-slate-600">{label}</p>
       <p className="mt-1 font-black">{value}</p>
     </div>
   );

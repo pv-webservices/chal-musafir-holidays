@@ -3,21 +3,20 @@ import Link from 'next/link';
 import { ArrowUpRight, MapPin } from 'lucide-react';
 import type { Destination } from '@/data/destinations';
 
-export function DestinationCard({ item, priority = false }: { item: Destination; priority?: boolean }) {
+/** `sizes` defaults to a grid card; rails pass their fixed card width. */
+export function DestinationCard({ item, sizes = '(max-width: 640px) 92vw, (max-width: 1024px) 45vw, 20vw' }: { item: Destination; sizes?: string }) {
   return (
     <Link
-      href={`/destinations/${item.slug}`}
+      href={`/destinations/${item.slug}/`}
       className="card-motion card-rim group focus-ring relative block overflow-hidden rounded-[26px] bg-slate-900"
-      aria-label={`${item.name} — ${item.subtitle}`}
     >
       <div className="relative aspect-[4/5] overflow-hidden rounded-[26px]">
         <Image
           src={item.image}
-          alt={item.name}
+          alt=""
           fill
-          preload={priority}
           className="card-zoom object-cover"
-          sizes="(max-width: 640px) 78vw, (max-width: 1024px) 45vw, 20vw"
+          sizes={sizes}
         />
         <div className="image-scrim absolute inset-0" />
 
